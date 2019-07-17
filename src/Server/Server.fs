@@ -7,7 +7,8 @@ open FSharp.Control.Tasks.V2
 open Giraffe
 open Saturn
 open Shared
-
+open Infrastructure.MeetingRoomReader
+open Microsoft.FSharp.Collections
 
 let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
 
@@ -22,6 +23,11 @@ let webApp = router {
         task {
             let counter = {Value = 42}
             return! json counter next ctx
+        })
+    get "/api/meetingrooms" (fun next ctx ->
+        task {
+            let meetingRooms = getAllMeetingRooms ()
+            return! json (meetingRooms |> List.ofSeq) next ctx
         })
 }
 
