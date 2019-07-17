@@ -11,41 +11,33 @@ open Thoth.Json
 
 open Shared
 
-// The model holds data that you want to keep track of while the application is running
-// in this case, we are keeping track of a counter
-// we mark it as optional, because initially it will not be available from the client
-// the initial value will be requested from server
-type Model = { Counter: Counter option }
+type Model = { MeetingRooms: MeetingRoom list }
 
 // The Msg type defines what events/actions can occur while the application is running
 // the state of the application changes *only* in reaction to these events
 type Msg =
-| Increment
-| Decrement
-| InitialCountLoaded of Counter
+// | Increment
+// | Decrement
+| InitialListLoaded of MeetingRoom list
 
-let initialCounter () = Fetch.fetchAs<Counter> "/api/init"
+let initialList () = Fetch.fetchAs<MeetingRoom list> "/api/meetingrooms"
 
-// defines the initial state and initial command (= side-effect) of the application
 let init () : Model * Cmd<Msg> =
-    let initialModel = { Counter = None }
+    let initialModel = { MeetingRooms = [] }
     let loadCountCmd =
-        Cmd.OfPromise.perform initialCounter () InitialCountLoaded
+        Cmd.OfPromise.perform initialList () InitialListLoaded
     initialModel, loadCountCmd
 
-// The update function computes the next state of the application based on the current state and the incoming events/messages
-// It can also run side-effects (encoded as commands) like calling the server via Http.
-// these commands in turn, can dispatch messages to which the update function will react.
 let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
-    match currentModel.Counter, msg with
-    | Some counter, Increment ->
-        let nextModel = { currentModel with Counter = Some { Value = counter.Value + 1 } }
-        nextModel, Cmd.none
-    | Some counter, Decrement ->
-        let nextModel = { currentModel with Counter = Some { Value = counter.Value - 1 } }
-        nextModel, Cmd.none
-    | _, InitialCountLoaded initialCount->
-        let nextModel = { Counter = Some initialCount }
+    match currentModel.MeetingRooms, msg with
+    // | Some counter, Increment ->
+    //     let nextModel = { currentModel with Counter = Some { Value = counter.Value + 1 } }
+    //     nextModel, Cmd.none
+    // | Some counter, Decrement ->
+    //     let nextModel = { currentModel with Counter = Some { Value = counter.Value - 1 } }
+    //     nextModel, Cmd.none
+    | _, InitialListLoaded meetingRooms->
+        let nextModel = { MeetingRooms = meetingRooms }
         nextModel, Cmd.none
     | _ -> currentModel, Cmd.none
 
@@ -53,7 +45,7 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
 let safeComponents =
     let components =
         span [ ]
-           [ a [ Href "https://github.com/SAFE-Stack/SAFE-template" ]
+           [ a [ ]
                [ str "SAFE  "
                  str Version.template ]
              str ", "
@@ -73,9 +65,9 @@ let safeComponents =
           str " powered by: "
           components ]
 
-let show = function
-| { Counter = Some counter } -> string counter.Value
-| { Counter = None   } -> "Loading..."
+// let show = function
+// | { MeetingRooms = meetingRooms } -> string counter.Value
+// | { MeetingRooms = []   } -> "Loading..."
 
 let button txt onClick =
     Button.button
@@ -84,23 +76,45 @@ let button txt onClick =
           Button.OnClick onClick ]
         [ str txt ]
 
+
+let showCode code =
+    match code with
+    | Some c -> str c
+    | None -> str "No Code"
+
+let showRows meetingRooms =
+    List.map (fun mr -> tr [ ]
+                                 [ td [ ] [ mr.Id.ToString() |> str ]
+                                   td [ ] [ str mr.Name ]
+                                   td [ ] [ (showCode mr.Code) ] ]) meetingRooms
+
+let showList meetingRooms =
+  [ Table.table [ Table.IsHoverable ]
+                        [ thead [ ]
+                            [ tr [ ]
+                                [ th [ ] [ str "Id" ]
+                                  th [ ] [ str "Name" ]
+                                  th [ ] [ str "Code" ] ] ]
+                          tbody [ ]
+                             (showRows meetingRooms)
+                               ] ]
+
+
 let view (model : Model) (dispatch : Msg -> unit) =
     div []
         [ Navbar.navbar [ Navbar.Color IsPrimary ]
             [ Navbar.Item.div [ ]
                 [ Heading.h2 [ ]
-                    [ str "SAFE Template" ] ] ]
+                    [ str "Meeting Room List" ] ] ]
 
           Container.container []
               [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ Heading.h3 [] [ str ("Press buttons to manipulate counter: " + show model) ] ]
-                Columns.columns []
-                    [ Column.column [] [ button "-" (fun _ -> dispatch Decrement) ]
-                      Column.column [] [ button "+" (fun _ -> dispatch Increment) ] ] ]
-
+                  (showList model.MeetingRooms)
+              ]
           Footer.footer [ ]
                 [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
                     [ safeComponents ] ] ]
+
 
 #if DEBUG
 open Elmish.Debug

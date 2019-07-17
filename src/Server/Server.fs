@@ -6,7 +6,6 @@ open Microsoft.Extensions.DependencyInjection
 open FSharp.Control.Tasks.V2
 open Giraffe
 open Saturn
-open Shared
 open Infrastructure.MeetingRoomReader
 open Microsoft.FSharp.Collections
 
@@ -19,13 +18,9 @@ let port =
     |> tryGetEnv |> Option.map uint16 |> Option.defaultValue 8085us
 
 let webApp = router {
-    get "/api/init" (fun next ctx ->
-        task {
-            let counter = {Value = 42}
-            return! json counter next ctx
-        })
     get "/api/meetingrooms" (fun next ctx ->
         task {
+            Dapper.SqlMapper.AddTypeHandler (Utils.Dapper.OptionHandler<string>())
             let meetingRooms = getAllMeetingRooms ()
             return! json (meetingRooms |> List.ofSeq) next ctx
         })

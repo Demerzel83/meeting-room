@@ -4,6 +4,7 @@ open System.Data.SqlClient
 open Utils.Dapper
 open Shared
 
+
 module MeetingRoomReader =
 
     let getAllMeetingRooms () =
