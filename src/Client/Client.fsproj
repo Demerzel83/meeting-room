@@ -9,6 +9,10 @@
         <None Include="paket.references" />
         <Compile Include="..\Shared\Shared.fs" />
         <Compile Include="Version.fs" />
+        <Compile Include="Parser.fs" />
+        <Compile Include="Messages.fs" />
+        <Compile Include="Model.fs" />
+        <Compile Include="List.fs" />
         <Compile Include="Client.fs" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />

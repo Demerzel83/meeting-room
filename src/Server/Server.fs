@@ -24,6 +24,12 @@ let webApp = router {
             let meetingRooms = getAllMeetingRooms ()
             return! json (meetingRooms |> List.ofSeq) next ctx
         })
+    getf "/api/meetingrooms/%s" (fun id next ctx ->
+        task {
+            Dapper.SqlMapper.AddTypeHandler (Utils.Dapper.OptionHandler<string>())
+            let meetingRooms = getMeetingRoom (System.Guid.Parse(id))
+            return! json meetingRooms next ctx
+        })
 }
 
 let app = application {
