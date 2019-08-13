@@ -9,3 +9,6 @@ module Messages =
       | InitialListLoaded of MeetingRoom list
       | FetchFailure of string*exn
       | FetchSuccess of MeetingRoom option
+      | NameUpdated of string
+      | CodeUpdated of string
+      | SaveMeetingRoom

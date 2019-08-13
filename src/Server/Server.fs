@@ -8,6 +8,9 @@ open Giraffe
 open Saturn
 open Infrastructure.MeetingRoomReader
 open Microsoft.FSharp.Collections
+open System.IdentityModel.Tokens.Jwt
+open Shared
+open System
 
 let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
 
@@ -30,6 +33,28 @@ let webApp = router {
             let meetingRooms = getMeetingRoom (System.Guid.Parse(id))
             return! json meetingRooms next ctx
         })
+    deletef "/api/meetingrooms/%s" (fun id next ctx ->
+        task {
+            let result = deleteMeetingRoom (Guid(id))
+            return! ctx.WriteJsonAsync result
+        }
+    )
+    put "/api/meetingrooms/" (fun next ctx ->
+        task {
+            let! rawBody = ctx.ReadBodyFromRequestAsync()
+            let newMeetingRoom = JsonExtensions.DeserializeFromJson<MeetingRoom> rawBody
+            let result = updateMeetingRoom newMeetingRoom.Id newMeetingRoom
+            return! ctx.WriteJsonAsync result
+        }
+    )
+    post "/api/meetingrooms/new" (fun next ctx ->
+        task {
+            let! rawBody = ctx.ReadBodyFromRequestAsync()
+            let newPerson = JsonExtensions.DeserializeFromJson<MeetingRoom> rawBody
+            let result = insertMeetingRoom newPerson
+            return! ctx.WriteJsonAsync result
+        }
+    )
 }
 
 let app = application {

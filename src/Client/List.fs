@@ -54,6 +54,12 @@ module List =
                                  (showRows meetingRooms)
                                    ] ]
 
+    let showContent (model:Model) =
+        if model.Loading then
+            [div [] [str "Loading...."]]
+        else
+            showList model.MeetingRooms
+
     let view (model : Model) (dispatch : Msg -> unit) =
         div []
             [ Navbar.navbar [ Navbar.Color IsPrimary ]
@@ -63,7 +69,7 @@ module List =
 
               Container.container []
                   [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                      (showList model.MeetingRooms)
+                      (showContent model)
                   ]
               Footer.footer [ ]
                     [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
