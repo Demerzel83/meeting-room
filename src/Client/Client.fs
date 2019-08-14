@@ -11,6 +11,7 @@ open UI.Model
 open UI.Messages
 open UI.List
 open UI.Edit
+open UI.New
 
 
 let meetingRoomDecoder =
@@ -37,6 +38,15 @@ let updateMeetingRoom (meetingRoom:MeetingRoom) =
 
     Fetch.put ("http://localhost:8080/api/meetingrooms/", data, meetingRoomDecoder)
 
+let createMeetingRoom (meetingRoom:MeetingRoom) =
+    let data =
+        Encode.object [
+            "name", Encode.string meetingRoom.Name
+            "code", Encode.option Encode.string meetingRoom.Code
+        ]
+
+    Fetch.post ("http://localhost:8080/api/meetingrooms/new", data, meetingRoomDecoder)
+
 let urlUpdate (result:Page option) (model:Model) =
   match result with
   | Some (MeetingRoom id) ->
@@ -49,7 +59,7 @@ let urlUpdate (result:Page option) (model:Model) =
 
 
 let init () : Model * Cmd<Msg> =
-    let initialModel = { Page = List ; MeetingRooms = []; MeetingRoom = None; Loading = true; MeetingRoomId = None }
+    let initialModel = { Page = List ; MeetingRooms = []; MeetingRoom = None; Loading = true; MeetingRoomId = None; NewMeetingRoom = { Id = System.Guid.Empty; Name= ""; Code = None} }
     let loadCountCmd =
         // Cmd.OfPromise.perform initialList () InitialListLoaded
         Cmd.OfPromise.perform getMeetingRoom ("608f3ba0-27d0-4cc3-8f12-5b9bd9951fe5") FetchSuccess
@@ -57,6 +67,9 @@ let init () : Model * Cmd<Msg> =
 
 let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
     match currentModel.MeetingRooms, msg with
+    | _, SaveNewMeetingRoom ->
+        createMeetingRoom currentModel.NewMeetingRoom |> ignore
+        currentModel, Cmd.none
     | _, SaveMeetingRoom ->
         Option.map updateMeetingRoom currentModel.MeetingRoom |> ignore
         currentModel, Cmd.none
@@ -74,11 +87,20 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
             | Some mr -> { mr  with Code = Some code}
 
         { currentModel with MeetingRoom = (Some newMeetingRoom) }, Cmd.none
+    | _, NewNameUpdated name ->
+        let newMeetingRoom =
+             { currentModel.NewMeetingRoom  with Name = name}
 
+        { currentModel with NewMeetingRoom = newMeetingRoom }, Cmd.none
+    | _, NewCodeUpdated code ->
+        let newMeetingRoom =
+           { currentModel.NewMeetingRoom  with Code = Some code}
+
+        { currentModel with NewMeetingRoom = newMeetingRoom }, Cmd.none
     | _, FetchFailure _ -> { currentModel with MeetingRoom = None }, Cmd.none
     | _, FetchSuccess mr -> { currentModel with MeetingRoom = mr }, Cmd.none
     | _, InitialListLoaded meetingRooms->
-        let nextModel = { Page = List; MeetingRooms = meetingRooms; MeetingRoom = None; Loading = false; MeetingRoomId = None }
+        let nextModel = { Page = List; MeetingRooms = meetingRooms; MeetingRoom = None; Loading = false; MeetingRoomId = None; NewMeetingRoom = { Id = System.Guid.Empty; Name = ""; Code = None} }
         nextModel, Cmd.none
     | _ -> currentModel, Cmd.none
 
@@ -92,7 +114,7 @@ open Elmish.UrlParser
 let test location = parseHash pageParser location
 
 // Program.mkProgram init update view
-Program.mkProgram init update editForm
+Program.mkProgram init update newForm
 // |> Program.toNavigable test urlUpdate
 #if DEBUG
 |> Program.withConsoleTrace

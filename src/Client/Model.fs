@@ -9,4 +9,5 @@ module Model =
             MeetingRooms: MeetingRoom list
             Loading: bool
             MeetingRoomId: string option
-            MeetingRoom:  MeetingRoom option }
+            MeetingRoom:  MeetingRoom option
+            NewMeetingRoom: MeetingRoom }

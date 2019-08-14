@@ -14,6 +14,7 @@
         <Compile Include="Model.fs" />
         <Compile Include="List.fs" />
         <Compile Include="Edit.fs" />
+        <Compile Include="New.fs" />
         <Compile Include="Client.fs" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />

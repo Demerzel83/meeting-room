@@ -11,4 +11,7 @@ module Messages =
       | FetchSuccess of MeetingRoom option
       | NameUpdated of string
       | CodeUpdated of string
+      | NewNameUpdated of string
+      | NewCodeUpdated of string
       | SaveMeetingRoom
+      | SaveNewMeetingRoom
