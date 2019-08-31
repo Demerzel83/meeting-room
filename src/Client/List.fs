@@ -37,13 +37,15 @@ module List =
         | Some c -> str c
         | None -> str "No Code"
 
-    let showRows meetingRooms =
+    let showRows meetingRooms (dispatch : Msg -> unit) =
         List.map (fun mr -> tr [ ]
                                      [ td [ ] [ a [ Href ("api/meetingrooms/" + mr.Id.ToString()) ] [ str "Open"]  ]
                                        td [ ] [ str mr.Name ]
-                                       td [ ] [ (showCode mr.Code) ] ]) meetingRooms
+                                       td [ ] [ (showCode mr.Code) ]
+                                       td [ ] [ Button.button [ Button.Color IsDanger; Button.OnClick (fun _ -> dispatch (DeleteMeetingRoom mr.Id)) ]
+                                                    [ str "Delete" ] ] ]) meetingRooms
 
-    let showList meetingRooms =
+    let showList meetingRooms (dispatch : Msg -> unit) =
       [ Table.table [ Table.IsHoverable ]
                             [ thead [ ]
                                 [ tr [ ]
@@ -51,14 +53,14 @@ module List =
                                       th [ ] [ str "Name" ]
                                       th [ ] [ str "Code" ] ] ]
                               tbody [ ]
-                                 (showRows meetingRooms)
+                                 (showRows meetingRooms dispatch)
                                    ] ]
 
-    let showContent (model:Model) =
+    let showContent (model:Model) (dispatch : Msg -> unit) =
         if model.Loading then
             [div [] [str "Loading...."]]
         else
-            showList model.MeetingRooms
+            showList model.MeetingRooms dispatch
 
     let view (model : Model) (dispatch : Msg -> unit) =
         div []
@@ -69,7 +71,7 @@ module List =
 
               Container.container []
                   [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                      (showContent model)
+                      (showContent model dispatch)
                   ]
               Footer.footer [ ]
                     [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
