@@ -1,9 +1,9 @@
-namespace UI
+namespace UI.Messages
 
-open Shared
 open System
+open Shared
 
-module Messages =
+module Type =
     // The Msg type defines what events/actions can occur while the application is running
     // the state of the application changes *only* in reaction to these events
     type Msg =
@@ -18,3 +18,4 @@ module Messages =
       | SaveNewMeetingRoom
       | DeleteMeetingRoom of Guid
       | MeetingRoomDeleted
+      | NewMeetingRoom

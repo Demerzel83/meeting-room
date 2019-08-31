@@ -1,4 +1,4 @@
-namespace Parser
+namespace UI.Parser
 
 open Elmish.UrlParser
 

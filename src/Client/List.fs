@@ -6,7 +6,7 @@ open Fulma
 
 open Shared
 open UI.Model
-open UI.Messages
+open UI.Messages.Type
 
 module List =
     let safeComponents =
@@ -68,7 +68,11 @@ module List =
                 [ Navbar.Item.div [ ]
                     [ Heading.h2 [ ]
                         [ str "Meeting Room List" ] ] ]
-
+              Container.container []
+                  [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+                      [ Button.button [ Button.Color IsPrimary; Button.OnClick (fun _ -> dispatch NewMeetingRoom) ]
+                            [ str "New" ] ]
+                  ]
               Container.container []
                   [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
                       (showContent model dispatch)

@@ -1,8 +1,10 @@
 namespace UI
+
 open Fable.React
-open Messages
-open Model
 open Fulma
+
+open UI.Model
+open UI.Messages.Type
 
 module Edit =
     let editForm (model:Model)  (dispatch:Msg -> unit) =

@@ -8,13 +8,15 @@
         <None Include="index.html" />
         <None Include="paket.references" />
         <Compile Include="..\Shared\Shared.fs" />
+        <Compile Include="Messages\Type.fs" />
         <Compile Include="Version.fs" />
         <Compile Include="Parser.fs" />
-        <Compile Include="Messages.fs" />
         <Compile Include="Model.fs" />
+        <Compile Include="Api.fs" />
         <Compile Include="List.fs" />
         <Compile Include="Edit.fs" />
         <Compile Include="New.fs" />
+        <Compile Include="Messages\Update.fs" />
         <Compile Include="Client.fs" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />
