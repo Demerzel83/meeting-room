@@ -2,20 +2,30 @@ namespace UI.Messages
 
 open System
 open Elmish
+open Elmish.Navigation
 
 open Shared
 open UI.Model
 open UI.Api
 open UI.Messages.Type
-open UI.Parser.Url
+open UI.Parser.Type
 
 module Update =
 
     let deleteMeetingRoomReload (id:Guid) =
         Cmd.OfPromise.perform deleteMeetingRoom (id) (fun _ -> MeetingRoomDeleted)
 
-    let init () : Model * Cmd<Msg> =
-        let initialModel = { Page = List ; MeetingRooms = []; MeetingRoom = None; Loading = true; MeetingRoomId = None; NewMeetingRoom = { Id = System.Guid.Empty; Name= ""; Code = None} }
+    let createMeeting meetingRoom =
+        Cmd.OfPromise.perform createMeetingRoom (meetingRoom) (fun _ -> MeetingRoomCreated)
+
+    let updateMeeting meetingRoom =
+        match meetingRoom with
+        | None -> Cmd.ofMsg MeetingRoomUpdated
+        | Some mr -> Cmd.OfPromise.perform updateMeetingRoom (mr) (fun _ -> MeetingRoomUpdated)
+
+
+    let init result : Model * Cmd<Msg> =
+        let initialModel = { Page = Page.List ; MeetingRooms = []; MeetingRoom = None; Loading = true; MeetingRoomId = None; NewMeetingRoom = { Id = System.Guid.Empty; Name= ""; Code = None} }
         let loadCountCmd =
             Cmd.OfPromise.perform initialList () InitialListLoaded
             // Cmd.OfPromise.perform getMeetingRoom ("608f3ba0-27d0-4cc3-8f12-5b9bd9951fe5") FetchSuccess
@@ -23,27 +33,27 @@ module Update =
 
     let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
         match msg with
-        | MeetingRoomDeleted ->
+        | NewMeetingRoom ->
+            currentModel, Navigation.newUrl "#new"
+        | ShowList | MeetingRoomDeleted | MeetingRoomUpdated | MeetingRoomCreated ->
             init()
         | DeleteMeetingRoom id ->
             currentModel, (deleteMeetingRoomReload id)
         | SaveNewMeetingRoom ->
-            createMeetingRoom currentModel.NewMeetingRoom |> ignore
-            currentModel, Cmd.none
+            currentModel, (createMeeting currentModel.NewMeetingRoom)
         | SaveMeetingRoom ->
-            Option.map updateMeetingRoom currentModel.MeetingRoom |> ignore
-            currentModel, Cmd.none
+            currentModel, (updateMeeting currentModel.MeetingRoom )
         | NameUpdated name ->
             let newMeetingRoom =
                 match currentModel.MeetingRoom with
-                | None ->{ Name = name; Code = None; Id = System.Guid.Empty }
+                | None ->{ Name = name; Code = None; Id = Guid.Empty }
                 | Some mr -> { mr  with Name = name}
 
             { currentModel with MeetingRoom = (Some newMeetingRoom) }, Cmd.none
         | CodeUpdated code ->
             let newMeetingRoom =
                 match currentModel.MeetingRoom with
-                | None ->{ Name = ""; Code = Some code; Id = System.Guid.Empty }
+                | None ->{ Name = ""; Code = Some code; Id = Guid.Empty }
                 | Some mr -> { mr  with Code = Some code}
 
             { currentModel with MeetingRoom = (Some newMeetingRoom) }, Cmd.none
@@ -60,6 +70,6 @@ module Update =
         | FetchFailure _ -> { currentModel with MeetingRoom = None }, Cmd.none
         | FetchSuccess mr -> { currentModel with MeetingRoom = mr }, Cmd.none
         | InitialListLoaded meetingRooms->
-            let nextModel = { Page = List; MeetingRooms = meetingRooms; MeetingRoom = None; Loading = false; MeetingRoomId = None; NewMeetingRoom = { Id = System.Guid.Empty; Name = ""; Code = None} }
+            let nextModel = { Page = Page.List; MeetingRooms = meetingRooms; MeetingRoom = None; Loading = false; MeetingRoomId = None; NewMeetingRoom = { Id = System.Guid.Empty; Name = ""; Code = None} }
             nextModel, Cmd.none
         | _ -> currentModel, Cmd.none

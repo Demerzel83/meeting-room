@@ -30,6 +30,6 @@ module New =
                     [ Button.button [ Button.Color IsPrimary; Button.OnClick (fun _ -> dispatch SaveNewMeetingRoom) ]
                         [ str "Save" ] ]
                   Control.div [ ]
-                    [ Button.button [ Button.IsLink ]
+                    [ Button.button [ Button.IsLink; Button.OnClick (fun _ -> dispatch ShowList) ]
                         [ str "Cancel" ] ] ]
         ]

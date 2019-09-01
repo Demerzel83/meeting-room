@@ -1,7 +1,7 @@
 namespace UI
 
 open Shared
-open UI.Parser.Url
+open UI.Parser.Type
 
 module Model =
     type Model =

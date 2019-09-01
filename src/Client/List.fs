@@ -7,6 +7,7 @@ open Fulma
 open Shared
 open UI.Model
 open UI.Messages.Type
+open UI.New
 
 module List =
     let safeComponents =
@@ -39,7 +40,7 @@ module List =
 
     let showRows meetingRooms (dispatch : Msg -> unit) =
         List.map (fun mr -> tr [ ]
-                                     [ td [ ] [ a [ Href ("api/meetingrooms/" + mr.Id.ToString()) ] [ str "Open"]  ]
+                                     [ td [ ] [ a [ Href ("#/meetingroom/" + mr.Id.ToString()) ] [ str "Open"]  ]
                                        td [ ] [ str mr.Name ]
                                        td [ ] [ (showCode mr.Code) ]
                                        td [ ] [ Button.button [ Button.Color IsDanger; Button.OnClick (fun _ -> dispatch (DeleteMeetingRoom mr.Id)) ]
@@ -60,7 +61,10 @@ module List =
         if model.Loading then
             [div [] [str "Loading...."]]
         else
-            showList model.MeetingRooms dispatch
+              match model.Page with
+              | Parser.Type.Page.New -> [newForm model dispatch]
+              | Parser.Type.Page.MeetingRoom id -> [Edit.editForm model dispatch]
+              | _ -> showList model.MeetingRooms dispatch
 
     let view (model : Model) (dispatch : Msg -> unit) =
         div []
@@ -70,8 +74,7 @@ module List =
                         [ str "Meeting Room List" ] ] ]
               Container.container []
                   [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                      [ Button.button [ Button.Color IsPrimary; Button.OnClick (fun _ -> dispatch NewMeetingRoom) ]
-                            [ str "New" ] ]
+                      [ a [ Href ("#/new") ] [ str "New"]  ]
                   ]
               Container.container []
                   [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]

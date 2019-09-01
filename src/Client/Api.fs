@@ -8,13 +8,13 @@ open Shared
 
 module Api =
 
-    let meetingRoomDecoder =
-        Decode.object (fun get ->
-            { Id = get.Required.Field "id" Decode.guid
-              Name = get.Required.Field "name" Decode.string
-              Code = get.Optional.Field "code" Decode.string
-            }
-        )
+    // let meetingRoomDecoder =
+    //     Decode.object (fun get ->
+    //         { Id = get.Required.Field "id" Decode.guid
+    //           Name = get.Required.Field "name" Decode.string
+    //           Code = get.Optional.Field "code" Decode.string
+    //         }
+    //     )
 
     let initialList ()
         = Fetch.fetchAs<MeetingRoom list> "/api/meetingrooms"
@@ -30,7 +30,7 @@ module Api =
                 "code", Encode.option Encode.string meetingRoom.Code
             ]
 
-        Fetch.put ("http://localhost:8080/api/meetingrooms/", data, meetingRoomDecoder)
+        Fetch.put ("http://localhost:8080/api/meetingrooms/", data, Decode.int)
 
     let createMeetingRoom (meetingRoom:MeetingRoom) =
         let data =
@@ -39,7 +39,7 @@ module Api =
                 "code", Encode.option Encode.string meetingRoom.Code
             ]
 
-        Fetch.post ("http://localhost:8080/api/meetingrooms/new", data, meetingRoomDecoder)
+        Fetch.post ("http://localhost:8080/api/meetingrooms/new", data, Decode.int)
 
 
     let deleteMeetingRoom (id : Guid) =
