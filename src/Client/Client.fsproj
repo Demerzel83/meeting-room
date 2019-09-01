@@ -17,6 +17,7 @@
         <Compile Include="Edit.fs" />
         <Compile Include="New.fs" />
         <Compile Include="List.fs" />
+        <Compile Include="View.fs" />
         <Compile Include="Messages\Update.fs" />
         <Compile Include="Client.fs" />
     </ItemGroup>

@@ -7,7 +7,7 @@ open Elmish.React
 open Elmish.Debug
 
 open UI.Parser.Functions
-open UI.List
+open UI.View
 open UI.Messages.Update
 
 Program.mkProgram init update view

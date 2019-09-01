@@ -28,7 +28,6 @@ module Update =
         let initialModel = { Page = Page.List ; MeetingRooms = []; MeetingRoom = None; Loading = true; MeetingRoomId = None; NewMeetingRoom = { Id = System.Guid.Empty; Name= ""; Code = None} }
         let loadCountCmd =
             Cmd.OfPromise.perform initialList () InitialListLoaded
-            // Cmd.OfPromise.perform getMeetingRoom ("608f3ba0-27d0-4cc3-8f12-5b9bd9951fe5") FetchSuccess
         initialModel, loadCountCmd
 
     let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
@@ -71,5 +70,4 @@ module Update =
         | FetchSuccess mr -> { currentModel with MeetingRoom = mr }, Cmd.none
         | InitialListLoaded meetingRooms->
             let nextModel = { Page = Page.List; MeetingRooms = meetingRooms; MeetingRoom = None; Loading = false; MeetingRoomId = None; NewMeetingRoom = { Id = System.Guid.Empty; Name = ""; Code = None} }
-            nextModel, Cmd.none
-        | _ -> currentModel, Cmd.none
+            nextModel, Navigation.newUrl "#list"
