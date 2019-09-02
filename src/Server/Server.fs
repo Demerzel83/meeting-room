@@ -43,17 +43,22 @@ let webApp = router {
     put "/api/meetingrooms/" (fun next ctx ->
         task {
             let! rawBody = ctx.ReadBodyFromRequestAsync()
-            let newMeetingRoom = Decode.Auto.unsafeFromString<MeetingRoom> rawBody
-            let result = updateMeetingRoom newMeetingRoom.Id newMeetingRoom
-            return! ctx.WriteJsonAsync result
+            let newMeetingRoom = Decode.Auto.fromString<MeetingRoom> rawBody
+            let result = Result.map(fun mr -> updateMeetingRoom mr.Id mr) newMeetingRoom
+            match result with
+            | Ok recordsChanged -> return! ctx.WriteJsonAsync recordsChanged
+            | Error err -> return! ctx.WriteJsonAsync err
         }
+
     )
     post "/api/meetingrooms/new" (fun next ctx ->
         task {
             let! rawBody = ctx.ReadBodyFromRequestAsync()
-            let newPerson = Decode.Auto.unsafeFromString<MeetingRoom> rawBody
-            let result = insertMeetingRoom newPerson
-            return! ctx.WriteJsonAsync result
+            let newMeetingRoom = Decode.Auto.fromString<MeetingRoom> rawBody
+            let result = Result.map insertMeetingRoom newMeetingRoom
+            match result with
+            | Ok recordsChanged -> return! ctx.WriteJsonAsync recordsChanged
+            | Error err -> return! ctx.WriteJsonAsync err
         }
     )
 }

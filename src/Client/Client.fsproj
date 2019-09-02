@@ -14,10 +14,10 @@
         <Compile Include="Model.fs" />
         <Compile Include="Api.fs" />
         <Compile Include="Parser\Functions.fs" />
-        <Compile Include="Edit.fs" />
-        <Compile Include="New.fs" />
-        <Compile Include="List.fs" />
-        <Compile Include="View.fs" />
+        <Compile Include="View\Edit.fs" />
+        <Compile Include="View\New.fs" />
+        <Compile Include="View\List.fs" />
+        <Compile Include="View\Index.fs" />
         <Compile Include="Messages\Update.fs" />
         <Compile Include="Client.fs" />
     </ItemGroup>

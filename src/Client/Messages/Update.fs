@@ -69,5 +69,12 @@ module Update =
         | FetchFailure _ -> { currentModel with MeetingRoom = None }, Cmd.none
         | FetchSuccess mr -> { currentModel with MeetingRoom = mr }, Cmd.none
         | InitialListLoaded meetingRooms->
-            let nextModel = { Page = Page.List; MeetingRooms = meetingRooms; MeetingRoom = None; Loading = false; MeetingRoomId = None; NewMeetingRoom = { Id = System.Guid.Empty; Name = ""; Code = None} }
+            let nextModel = {
+                Page = Page.List;
+                MeetingRooms = meetingRooms;
+                MeetingRoom = None;
+                Loading = false;
+                MeetingRoomId = None;
+                NewMeetingRoom = { Id = Guid.NewGuid(); Name = ""; Code = None }
+            }
             nextModel, Navigation.newUrl "#list"

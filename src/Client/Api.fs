@@ -35,6 +35,7 @@ module Api =
     let createMeetingRoom (meetingRoom:MeetingRoom) =
         let data =
             Encode.object [
+                "Id", Encode.guid meetingRoom.Id
                 "Name", Encode.string meetingRoom.Name
                 "Code", Encode.option Encode.string meetingRoom.Code
             ]
