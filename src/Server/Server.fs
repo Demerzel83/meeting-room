@@ -11,6 +11,7 @@ open Microsoft.FSharp.Collections
 open System.IdentityModel.Tokens.Jwt
 open Shared
 open System
+open Thoth.Json.Net
 
 let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
 
@@ -42,7 +43,7 @@ let webApp = router {
     put "/api/meetingrooms/" (fun next ctx ->
         task {
             let! rawBody = ctx.ReadBodyFromRequestAsync()
-            let newMeetingRoom = JsonExtensions.DeserializeFromJson<MeetingRoom> rawBody
+            let newMeetingRoom = Decode.Auto.unsafeFromString<MeetingRoom> rawBody
             let result = updateMeetingRoom newMeetingRoom.Id newMeetingRoom
             return! ctx.WriteJsonAsync result
         }
@@ -50,7 +51,7 @@ let webApp = router {
     post "/api/meetingrooms/new" (fun next ctx ->
         task {
             let! rawBody = ctx.ReadBodyFromRequestAsync()
-            let newPerson = JsonExtensions.DeserializeFromJson<MeetingRoom> rawBody
+            let newPerson = Decode.Auto.unsafeFromString<MeetingRoom> rawBody
             let result = insertMeetingRoom newPerson
             return! ctx.WriteJsonAsync result
         }

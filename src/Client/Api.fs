@@ -25,9 +25,9 @@ module Api =
     let updateMeetingRoom (meetingRoom:MeetingRoom) =
         let data =
             Encode.object [
-                "id", Encode.guid meetingRoom.Id
-                "name", Encode.string meetingRoom.Name
-                "code", Encode.option Encode.string meetingRoom.Code
+                "Id", Encode.guid meetingRoom.Id
+                "Name", Encode.string meetingRoom.Name
+                "Code", Encode.option Encode.string meetingRoom.Code
             ]
 
         Fetch.put ("http://localhost:8080/api/meetingrooms/", data, Decode.int)
@@ -35,8 +35,8 @@ module Api =
     let createMeetingRoom (meetingRoom:MeetingRoom) =
         let data =
             Encode.object [
-                "name", Encode.string meetingRoom.Name
-                "code", Encode.option Encode.string meetingRoom.Code
+                "Name", Encode.string meetingRoom.Name
+                "Code", Encode.option Encode.string meetingRoom.Code
             ]
 
         Fetch.post ("http://localhost:8080/api/meetingrooms/new", data, Decode.int)

@@ -39,8 +39,8 @@ module View =
         else
               match model.Page with
               | Parser.Type.Page.New -> [newForm model dispatch]
-              | Parser.Type.Page.MeetingRoom id -> [Edit.editForm model dispatch]
-              | _ -> List.showList model.MeetingRooms dispatch
+              | Parser.Type.Page.MeetingRoom _ -> [Edit.editForm model dispatch]
+              | Parser.Type.Page.List -> List.showList model.MeetingRooms dispatch
 
     let view (model : Model) (dispatch : Msg -> unit) =
         div []
