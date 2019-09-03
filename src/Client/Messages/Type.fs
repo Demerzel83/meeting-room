@@ -17,8 +17,5 @@ module Type =
       | SaveMeetingRoom
       | SaveNewMeetingRoom
       | DeleteMeetingRoom of Guid
-      | MeetingRoomDeleted
-      | MeetingRoomUpdated
-      | MeetingRoomCreated
       | NewMeetingRoom
       | ShowList

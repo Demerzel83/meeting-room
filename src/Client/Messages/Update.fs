@@ -11,30 +11,44 @@ open UI.Messages.Type
 open UI.Parser.Type
 
 module Update =
+    let always arg = fun _ -> arg
 
-    let deleteMeetingRoomReload (id:Guid) =
-        Cmd.OfPromise.perform deleteMeetingRoom (id) (fun _ -> MeetingRoomDeleted)
+    let deleteMeetingRoomReload id =
+        Cmd.OfPromise.perform deleteMeetingRoom id (always ShowList)
 
     let createMeeting meetingRoom =
-        Cmd.OfPromise.perform createMeetingRoom (meetingRoom) (fun _ -> MeetingRoomCreated)
+        Cmd.OfPromise.perform createMeetingRoom meetingRoom (always ShowList)
+
+    let updatemr meetingRoom =
+        Cmd.OfPromise.perform updateMeetingRoom meetingRoom (always ShowList)
 
     let updateMeeting meetingRoom =
         match meetingRoom with
-        | None -> Cmd.ofMsg MeetingRoomUpdated
-        | Some mr -> Cmd.OfPromise.perform updateMeetingRoom (mr) (fun _ -> MeetingRoomUpdated)
+        | None -> Cmd.ofMsg ShowList
+        | Some mr -> updatemr mr
 
 
-    let init result : Model * Cmd<Msg> =
-        let initialModel = { Page = Page.List ; MeetingRooms = []; MeetingRoom = None; Loading = true; MeetingRoomId = None; NewMeetingRoom = { Id = System.Guid.Empty; Name= ""; Code = None} }
+    let init _ : Model * Cmd<Msg> =
+        let initialModel =
+            {   Page = Page.List ;
+                MeetingRooms = [] ;
+                MeetingRoom = None ;
+                Loading = true ;
+                MeetingRoomId = None ;
+                NewMeetingRoom =
+                {   Id = Guid.Empty ;
+                    Name = "" ;
+                    Code = None } }
+
         let loadCountCmd =
-            Cmd.OfPromise.perform initialList () InitialListLoaded
+            Cmd.OfPromise.perform getAllMeetingRooms () InitialListLoaded
         initialModel, loadCountCmd
 
     let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
         match msg with
         | NewMeetingRoom ->
             currentModel, Navigation.newUrl "#new"
-        | ShowList | MeetingRoomDeleted | MeetingRoomUpdated | MeetingRoomCreated ->
+        | ShowList ->
             init()
         | DeleteMeetingRoom id ->
             currentModel, (deleteMeetingRoomReload id)

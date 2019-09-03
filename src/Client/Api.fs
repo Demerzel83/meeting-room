@@ -8,39 +8,24 @@ open Shared
 
 module Api =
 
-    // let meetingRoomDecoder =
-    //     Decode.object (fun get ->
-    //         { Id = get.Required.Field "id" Decode.guid
-    //           Name = get.Required.Field "name" Decode.string
-    //           Code = get.Optional.Field "code" Decode.string
-    //         }
-    //     )
-
-    let initialList ()
+    let getAllMeetingRooms ()
         = Fetch.fetchAs<MeetingRoom list> "/api/meetingrooms"
 
     let getMeetingRoom (id:string)
         = Fetch.fetchAs<MeetingRoom option> ("http://localhost:8080/api/meetingrooms/" + id.ToString())
 
-    let updateMeetingRoom (meetingRoom:MeetingRoom) =
-        let data =
-            Encode.object [
-                "Id", Encode.guid meetingRoom.Id
-                "Name", Encode.string meetingRoom.Name
-                "Code", Encode.option Encode.string meetingRoom.Code
-            ]
+    let encode meetingRoom =
+        Encode.object [
+            "Id", Encode.guid meetingRoom.Id
+            "Name", Encode.string meetingRoom.Name
+            "Code", Encode.option Encode.string meetingRoom.Code
+        ]
 
-        Fetch.put ("http://localhost:8080/api/meetingrooms/", data, Decode.int)
+    let updateMeetingRoom (meetingRoom:MeetingRoom) =
+        Fetch.put ("http://localhost:8080/api/meetingrooms/", (encode meetingRoom), Decode.int)
 
     let createMeetingRoom (meetingRoom:MeetingRoom) =
-        let data =
-            Encode.object [
-                "Id", Encode.guid meetingRoom.Id
-                "Name", Encode.string meetingRoom.Name
-                "Code", Encode.option Encode.string meetingRoom.Code
-            ]
-
-        Fetch.post ("http://localhost:8080/api/meetingrooms/new", data, Decode.int)
+        Fetch.post ("http://localhost:8080/api/meetingrooms/new", (encode meetingRoom), Decode.int)
 
 
     let deleteMeetingRoom (id : Guid) =
