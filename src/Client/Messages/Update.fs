@@ -14,17 +14,20 @@ module Update =
     let always arg = fun _ -> arg
 
     let deleteMeetingRoomReload id =
-        Cmd.OfPromise.perform deleteMeetingRoom id (always ShowList)
+        Cmd.OfPromise.perform deleteMeetingRoom id (always LoadMeetingRoomList)
 
     let createMeeting meetingRoom =
-        Cmd.OfPromise.perform createMeetingRoom meetingRoom (always ShowList)
+        Cmd.OfPromise.perform createMeetingRoom meetingRoom (always LoadMeetingRoomList)
 
     let updatemr meetingRoom =
-        Cmd.OfPromise.perform updateMeetingRoom meetingRoom (always ShowList)
+        Cmd.OfPromise.perform updateMeetingRoom meetingRoom (always LoadMeetingRoomList)
+
+    let loadMeetingRoom =
+        Cmd.OfPromise.perform getAllMeetingRooms () InitialListLoaded
 
     let updateMeeting meetingRoom =
         match meetingRoom with
-        | None -> Cmd.ofMsg ShowList
+        | None -> Cmd.ofMsg LoadMeetingRoomList
         | Some mr -> updatemr mr
 
 
@@ -40,15 +43,13 @@ module Update =
                     Name = "" ;
                     Code = None } }
 
-        let loadCountCmd =
-            Cmd.OfPromise.perform getAllMeetingRooms () InitialListLoaded
-        initialModel, loadCountCmd
+        initialModel, loadMeetingRoom
 
     let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
         match msg with
         | NewMeetingRoom ->
             currentModel, Navigation.newUrl "#new"
-        | ShowList ->
+        | LoadMeetingRoomList ->
             init()
         | DeleteMeetingRoom id ->
             currentModel, (deleteMeetingRoomReload id)
@@ -59,15 +60,15 @@ module Update =
         | NameUpdated name ->
             let newMeetingRoom =
                 match currentModel.MeetingRoom with
-                | None ->{ Name = name; Code = None; Id = Guid.Empty }
-                | Some mr -> { mr  with Name = name}
+                | None -> { Name = name; Code = None; Id = Guid.Empty }
+                | Some mr -> { mr  with Name = name }
 
             { currentModel with MeetingRoom = (Some newMeetingRoom) }, Cmd.none
         | CodeUpdated code ->
             let newMeetingRoom =
                 match currentModel.MeetingRoom with
-                | None ->{ Name = ""; Code = Some code; Id = Guid.Empty }
-                | Some mr -> { mr  with Code = Some code}
+                | None -> { Name = ""; Code = Some code; Id = Guid.Empty }
+                | Some mr -> { mr  with Code = Some code }
 
             { currentModel with MeetingRoom = (Some newMeetingRoom) }, Cmd.none
         | NewNameUpdated name ->

@@ -18,4 +18,4 @@ module Type =
       | SaveNewMeetingRoom
       | DeleteMeetingRoom of Guid
       | NewMeetingRoom
-      | ShowList
+      | LoadMeetingRoomList

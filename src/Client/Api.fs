@@ -12,7 +12,7 @@ module Api =
         = Fetch.fetchAs<MeetingRoom list> "/api/meetingrooms"
 
     let getMeetingRoom (id:string)
-        = Fetch.fetchAs<MeetingRoom option> ("http://localhost:8080/api/meetingrooms/" + id.ToString())
+        = Fetch.fetchAs<MeetingRoom option> ("api/meetingrooms/" + id.ToString())
 
     let encode meetingRoom =
         Encode.object [
@@ -22,14 +22,14 @@ module Api =
         ]
 
     let updateMeetingRoom (meetingRoom:MeetingRoom) =
-        Fetch.put ("http://localhost:8080/api/meetingrooms/", (encode meetingRoom), Decode.int)
+        Fetch.put ("api/meetingrooms/", (encode meetingRoom), Decode.int)
 
     let createMeetingRoom (meetingRoom:MeetingRoom) =
-        Fetch.post ("http://localhost:8080/api/meetingrooms/new", (encode meetingRoom), Decode.int)
+        Fetch.post ("api/meetingrooms/new", (encode meetingRoom), Decode.int)
 
 
     let deleteMeetingRoom (id : Guid) =
-        let url = sprintf "http://localhost:8080/api/meetingrooms/%s" (id.ToString())
+        let url = sprintf "api/meetingrooms/%s" (id.ToString())
         Fetch.delete(url, null, Decode.int)
 
 

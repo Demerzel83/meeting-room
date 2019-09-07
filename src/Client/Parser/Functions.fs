@@ -24,7 +24,5 @@ module Functions =
       match result with
       | Some (Page.MeetingRoom id) ->
           { model with Page = (Page.MeetingRoom id) }, Cmd.OfPromise.either getMeetingRoom id FetchSuccess (fun ex -> FetchFailure (id,ex))
-
-      | Some page ->
-          { model with Page = page;  }, []
+      | Some page -> { model with Page = page }, []
       | None -> { model with Page = Page.List }, []

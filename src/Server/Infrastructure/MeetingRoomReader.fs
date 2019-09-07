@@ -6,19 +6,15 @@ open Shared
 open Dapper
 open System
 
-
 module MeetingRoomReader =
-
-    let getAllMeetingRooms () =
-        let connection = new SqlConnection ("Server=localhost;Database=MeetingRooms;Trusted_Connection=True;")
-
+    // let connection = new SqlConnection ("Server=localhost;Database=MeetingRooms;Trusted_Connection=True;")
+    let getAllMeetingRooms connection =
         let test = connection |> dapperQuery<MeetingRoom>
         let result = test "SELECT Id, Name, Code FROM dbo.MeetingRooms"
         result
 
-    let getMeetingRoom id =
-        let connection = new SqlConnection ("Server=localhost;Database=MeetingRooms;Trusted_Connection=True;")
-        let dp = Dapper.DynamicParameters()
+    let getMeetingRoom connection id =
+        let dp = DynamicParameters()
         dp.Add("Id", id)
         let mr =
             dapperParametrizedQuery<MeetingRoom> connection "SELECT Id, Name, Code FROM dbo.MeetingRooms WHERE Id = @Id" dp
@@ -27,8 +23,7 @@ module MeetingRoomReader =
         | [mro] -> Some mro
         | _ -> None
 
-    let insertMeetingRoom (meetingRoom:MeetingRoom) =
-        let connection = new SqlConnection ("Server=localhost;Database=MeetingRooms;Trusted_Connection=True;")
+    let insertMeetingRoom (connection:SqlConnection) meetingRoom =
         let dp = DynamicParameters()
         dp.Add("Id", Guid.NewGuid())
         dp.Add("Name", meetingRoom.Name)
@@ -41,8 +36,7 @@ module MeetingRoomReader =
                ,[Code])
          VALUES (@Id, @Name,@Code)", dp)
 
-    let updateMeetingRoom (id:Guid) (meetingRoom:MeetingRoom) =
-        let connection = new SqlConnection ("Server=localhost;Database=MeetingRooms;Trusted_Connection=True;")
+    let updateMeetingRoom (connection:SqlConnection) meetingRoom =
         let dp = DynamicParameters()
         dp.Add("Id", meetingRoom.Id)
         dp.Add("Name", meetingRoom.Name)
@@ -55,8 +49,7 @@ module MeetingRoomReader =
              WHERE [Id] = @Id", dp)
 
 
-    let deleteMeetingRoom (id:Guid) =
-        let connection = new SqlConnection ("Server=localhost;Database=MeetingRooms;Trusted_Connection=True;")
+    let deleteMeetingRoom (connection:SqlConnection) (id:Guid) =
         let dp = DynamicParameters()
         dp.Add("Id", id)
 

@@ -13,6 +13,6 @@ open UI.Messages.Update
 Program.mkProgram init update view
 |> Program.toNavigable urlParser urlUpdate
 |> Program.withConsoleTrace
-|> Program.withReactBatched "elmish-app"
+|> Program.withReactBatched "meetingroom-app"
 |> Program.withDebugger
 |> Program.run

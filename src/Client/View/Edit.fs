@@ -12,7 +12,7 @@ module Edit =
         | None -> div [] [str "Missing meeting room"]
         | Some meetingRoom ->
             form [ ]
-                 [ // Name field
+                 [
                    Field.div [ ]
                         [ Label.label [ ]
                             [ str "Name" ]
@@ -20,7 +20,6 @@ module Edit =
                             [ Input.text [
                                 Input.Value meetingRoom.Name;
                                 Input.OnChange (fun event -> dispatch (NameUpdated event.Value) ) ] ] ]
-                   // Username field
                    Field.div [ ]
                         [ Label.label [ ]
                             [ str "Code" ]
@@ -33,6 +32,6 @@ module Edit =
                         [ Button.button [ Button.Color IsPrimary; Button.OnClick (fun _ -> dispatch SaveMeetingRoom) ]
                             [ str "Save" ] ]
                       Control.div [ ]
-                        [ Button.button [ Button.IsLink; Button.OnClick (fun _ -> dispatch ShowList) ]
+                        [ Button.button [ Button.IsLink; Button.OnClick (fun _ -> dispatch LoadMeetingRoomList) ]
                             [ str "Cancel" ] ] ]
             ]
