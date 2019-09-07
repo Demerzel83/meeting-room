@@ -1,24 +1,26 @@
-namespace Api
+namespace MeetingRoom.Api
 
 open FSharp.Control.Tasks.V2
 open Giraffe
 open Saturn
-open Infrastructure.MeetingRoomReader
 open Microsoft.FSharp.Collections
-open Shared
 open System
+
+open MeetingRoom.Shared
+open MeetingRoom.Infrastructure.MeetingRoomReader
+open MeetingRoom.Utils
 
 module Route =
     let Definition connection = router {
         get "/api/meetingrooms" (fun next ctx ->
             task {
-                Dapper.SqlMapper.AddTypeHandler (Utils.Dapper.OptionHandler<string>())
+                Dapper.SqlMapper.AddTypeHandler (Dapper.OptionHandler<string>()) // todo: rts
                 let meetingRooms = getAllMeetingRooms connection
-                return! json (meetingRooms |> List.ofSeq) next ctx
+                return! json meetingRooms next ctx
             })
         getf "/api/meetingrooms/%s" (fun id next ctx ->
             task {
-                Dapper.SqlMapper.AddTypeHandler (Utils.Dapper.OptionHandler<string>())
+                Dapper.SqlMapper.AddTypeHandler (Dapper.OptionHandler<string>())  // todo: rts
                 let meetingRooms = getMeetingRoom connection (System.Guid.Parse(id))
                 return! json meetingRooms next ctx
             })

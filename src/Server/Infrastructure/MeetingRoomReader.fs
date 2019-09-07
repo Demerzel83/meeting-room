@@ -1,24 +1,26 @@
-namespace Infrastructure
+namespace MeetingRoom.Infrastructure
 
 open System.Data.SqlClient
-open Utils.Dapper
-open Shared
 open Dapper
 open System
 
+open MeetingRoom.Utils.Dapper
+open MeetingRoom.Shared
+
 module MeetingRoomReader =
-    // let connection = new SqlConnection ("Server=localhost;Database=MeetingRooms;Trusted_Connection=True;")
+
     let getAllMeetingRooms connection =
-        let test = connection |> dapperQuery<MeetingRoom>
-        let result = test "SELECT Id, Name, Code FROM dbo.MeetingRooms"
-        result
+        dapperQuery<MeetingRoom> connection "SELECT Id, Name, Code FROM dbo.MeetingRooms"
+        |> List.ofSeq
 
     let getMeetingRoom connection id =
         let dp = DynamicParameters()
         dp.Add("Id", id)
+
         let mr =
             dapperParametrizedQuery<MeetingRoom> connection "SELECT Id, Name, Code FROM dbo.MeetingRooms WHERE Id = @Id" dp
             |> List.ofSeq
+
         match mr with
         | [mro] -> Some mro
         | _ -> None
@@ -27,7 +29,7 @@ module MeetingRoomReader =
         let dp = DynamicParameters()
         dp.Add("Id", Guid.NewGuid())
         dp.Add("Name", meetingRoom.Name)
-        dp.Add("Code", meetingRoom.Code)
+        dp.Add("Code", Option.defaultValue null meetingRoom.Code)
 
         connection.Execute("
             INSERT INTO [dbo].[MeetingRooms]

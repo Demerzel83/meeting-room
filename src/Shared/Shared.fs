@@ -1,4 +1,4 @@
-namespace Shared
+namespace MeetingRoom.Shared
 
 open System
 

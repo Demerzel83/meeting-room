@@ -1,6 +1,6 @@
 open System.IO
 open Saturn
-open Api
+open MeetingRoom.Api
 
 let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
 
