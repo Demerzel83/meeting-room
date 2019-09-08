@@ -4,7 +4,7 @@ open Fable.React
 open Fable.React.Props
 open Fulma
 
-open Shared
+open  MeetingRoom.Shared
 open UI.Messages.Type
 
 module List =

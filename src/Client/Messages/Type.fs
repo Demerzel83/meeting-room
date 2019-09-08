@@ -1,7 +1,7 @@
 namespace UI.Messages
 
 open System
-open Shared
+open MeetingRoom.Shared
 
 module Type =
     // The Msg type defines what events/actions can occur while the application is running

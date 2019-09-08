@@ -1,6 +1,6 @@
 namespace UI
 
-open Shared
+open  MeetingRoom.Shared
 open UI.Parser.Type
 
 module Model =

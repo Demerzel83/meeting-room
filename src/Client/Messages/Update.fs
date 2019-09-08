@@ -4,7 +4,7 @@ open System
 open Elmish
 open Elmish.Navigation
 
-open Shared
+open  MeetingRoom.Shared
 open UI.Model
 open UI.Api
 open UI.Messages.Type

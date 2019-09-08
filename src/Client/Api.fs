@@ -4,7 +4,7 @@ open Thoth.Fetch
 open Thoth.Json
 open System
 
-open Shared
+open  MeetingRoom.Shared
 
 module Api =
 
