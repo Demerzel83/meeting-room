@@ -2,6 +2,7 @@
 .fake/
 .vs/
 .ionide/
+paket.lock
 obj/
 bin/
 packages/

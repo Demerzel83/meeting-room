@@ -3,43 +3,45 @@ namespace MeetingRoom.Api
 open FSharp.Control.Tasks.V2
 open Giraffe
 open Saturn
-open Microsoft.FSharp.Collections
 open System
 
 open MeetingRoom.Shared
 open MeetingRoom.Infrastructure.MeetingRoomReader
 open MeetingRoom.Utils
+open System.Data.SqlClient
+open MeetingRoom.Utils.Sql
 
 module Route =
-    let Definition connection = router {
+    let Definition (connection:SqlConnection) = router {
         get "/api/meetingrooms" (fun next ctx ->
             task {
                 Dapper.SqlMapper.AddTypeHandler (Dapper.OptionHandler<string>()) // todo: rts
-                let meetingRooms = getAllMeetingRooms connection
-                return! json meetingRooms next ctx
+                let meetingRooms = getAllMeetingRooms()
+                return! json (execute connection meetingRooms) next ctx
             })
         getf "/api/meetingrooms/%s" (fun id next ctx ->
             task {
                 Dapper.SqlMapper.AddTypeHandler (Dapper.OptionHandler<string>())  // todo: rts
-                let meetingRooms = getMeetingRoom connection (System.Guid.Parse(id))
-                return! json meetingRooms next ctx
+                let meetingRoom = getMeetingRoom (System.Guid.Parse(id))
+
+                return! json (execute connection meetingRoom) next ctx
             })
         deletef "/api/meetingrooms/%s" (fun id next ctx ->
             task {
-                let result = deleteMeetingRoom connection (Guid(id))
-                return! ctx.WriteJsonAsync result
+                let result = deleteMeetingRoom (Guid(id))
+                return! ctx.WriteJsonAsync (execute connection result )
             }
         )
         put "/api/meetingrooms/" (fun next ctx ->
             task {
                 let! meetingRoom = Controller.getModel<MeetingRoom> ctx
-                return! ctx.WriteJsonAsync (updateMeetingRoom connection meetingRoom)
+                return! ctx.WriteJsonAsync (execute  connection (updateMeetingRoom meetingRoom))
             }
         )
         post "/api/meetingrooms/new" (fun next ctx ->
             task {
                 let! newMeetingRoom = Controller.getModel<MeetingRoom> ctx
-                return! ctx.WriteJsonAsync (insertMeetingRoom connection newMeetingRoom)
+                return! ctx.WriteJsonAsync (execute connection ( insertMeetingRoom newMeetingRoom))
             }
         )
     }

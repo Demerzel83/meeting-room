@@ -1,6 +1,7 @@
 open System.IO
 open Saturn
 open MeetingRoom.Api
+open MeetingRoom.Utils.Sql
 
 let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
 

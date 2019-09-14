@@ -7,7 +7,10 @@
     <ItemGroup>
         <None Include="paket.references" />
         <Compile Include="..\Shared\Shared.fs" />
+        <Compile Include=".\Utils\Reader.fs" />
+        <Compile Include=".\Utils\SqlAction.fs" />
         <Compile Include=".\Utils\Dapper.fs" />
+        <Compile Include=".\Infrastructure\MeetingRoomDb.fs" />
         <Compile Include=".\Infrastructure\MeetingRoomReader.fs" />
         <Compile Include="Api.fs" />
         <Compile Include="Server.fs" />

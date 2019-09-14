@@ -1,60 +1,24 @@
 namespace MeetingRoom.Infrastructure
 
-open System.Data.SqlClient
-open Dapper
 open System
 
-open MeetingRoom.Utils.Dapper
+open MeetingRoom.Utils.Sql
+open MeetingRoomDb
 open MeetingRoom.Shared
 
 module MeetingRoomReader =
 
-    let getAllMeetingRooms connection =
-        dapperQuery<MeetingRoom> connection "SELECT Id, Name, Code FROM dbo.MeetingRooms"
-        |> List.ofSeq
+    let getAllMeetingRooms () =
+        SqlAction.Reader getAllMeetingRooms
 
-    let getMeetingRoom connection id =
-        let dp = DynamicParameters()
-        dp.Add("Id", id)
+    let getMeetingRoom id =
+        SqlAction.Reader (getMeetingRoom id)
 
-        let mr =
-            dapperParametrizedQuery<MeetingRoom> connection "SELECT Id, Name, Code FROM dbo.MeetingRooms WHERE Id = @Id" dp
-            |> List.ofSeq
+    let insertMeetingRoom (meetingRoom:MeetingRoom) =
+        SqlAction.Reader (insertMeetingRoom meetingRoom)
 
-        match mr with
-        | [mro] -> Some mro
-        | _ -> None
+    let updateMeetingRoom (meetingRoom:MeetingRoom) =
+        SqlAction.Reader (updateMeetingRoom meetingRoom)
 
-    let insertMeetingRoom (connection:SqlConnection) meetingRoom =
-        let dp = DynamicParameters()
-        dp.Add("Id", Guid.NewGuid())
-        dp.Add("Name", meetingRoom.Name)
-        dp.Add("Code", Option.defaultValue null meetingRoom.Code)
-
-        connection.Execute("
-            INSERT INTO [dbo].[MeetingRooms]
-               ([Id]
-               ,[Name]
-               ,[Code])
-         VALUES (@Id, @Name,@Code)", dp)
-
-    let updateMeetingRoom (connection:SqlConnection) meetingRoom =
-        let dp = DynamicParameters()
-        dp.Add("Id", meetingRoom.Id)
-        dp.Add("Name", meetingRoom.Name)
-        dp.Add("Code", Option.defaultValue null meetingRoom.Code)
-
-        connection.Execute("
-            UPDATE [dbo].[MeetingRooms]
-             SET [Name] = @Name
-               ,[Code] = @Code
-             WHERE [Id] = @Id", dp)
-
-
-    let deleteMeetingRoom (connection:SqlConnection) (id:Guid) =
-        let dp = DynamicParameters()
-        dp.Add("Id", id)
-
-        connection.Execute("
-            DELETE FROM [dbo].[MeetingRooms]
-             WHERE [Id] = @Id", dp)
+    let deleteMeetingRoom  (id:Guid) =
+        SqlAction.Reader (deleteMeetingRoom id)
