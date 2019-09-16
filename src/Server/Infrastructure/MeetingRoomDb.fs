@@ -1,20 +1,20 @@
 namespace MeetingRoom.Infrastructure
 
-open System.Data.SqlClient
 open Dapper
 open System
 
 open MeetingRoom.Utils.Dapper
 open MeetingRoom.Shared
+open System.Data
 
 module MeetingRoomDb =
 
-    let getAllMeetingRooms connection =
+    let getAllMeetingRooms (connection:IDbConnection) =
             dapperQuery<MeetingRoom> connection "SELECT Id, Name, Code FROM dbo.MeetingRooms"
             |> List.ofSeq
 
 
-    let getMeetingRoom (id:Guid) connection  =
+    let getMeetingRoom (id:Guid) (connection:IDbConnection)  =
             let dp = DynamicParameters()
             dp.Add("Id", id)
 
@@ -27,7 +27,7 @@ module MeetingRoomDb =
             | _ -> None
 
 
-    let insertMeetingRoom  meetingRoom (connection:SqlConnection) =
+    let insertMeetingRoom  meetingRoom (connection:IDbConnection) =
         let dp = DynamicParameters()
         dp.Add("Id", Guid.NewGuid())
         dp.Add("Name", meetingRoom.Name)
@@ -41,7 +41,7 @@ module MeetingRoomDb =
          VALUES (@Id, @Name,@Code)", dp)
 
 
-    let updateMeetingRoom meetingRoom (connection:SqlConnection) =
+    let updateMeetingRoom meetingRoom (connection:IDbConnection) =
         let dp = DynamicParameters()
         dp.Add("Id", meetingRoom.Id)
         dp.Add("Name", meetingRoom.Name)
@@ -54,7 +54,7 @@ module MeetingRoomDb =
              WHERE [Id] = @Id", dp)
 
 
-    let deleteMeetingRoom (id:Guid)  (connection:SqlConnection) =
+    let deleteMeetingRoom (id:Guid)  (connection:IDbConnection) =
         let dp = DynamicParameters()
         dp.Add("Id", id)
 

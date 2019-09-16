@@ -1,8 +1,8 @@
 namespace MeetingRoom.Utils
 
 open Dapper
-open System.Data.SqlClient
 open System
+open System.Data
 
 module Dapper =
     type OptionHandler<'T>() =
@@ -21,11 +21,11 @@ module Dapper =
             then None
             else Some (value :?> 'T)
 
-    let dapperQuery<'Result>  (connection:SqlConnection) (query:string) =
+    let dapperQuery<'Result>  (connection:IDbConnection) (query:string) =
         connection.Query<'Result>(query)
 
-    let dapperParametrizedQuery<'Result>  (connection:SqlConnection) (query:string) (param:obj) : 'Result seq =
+    let dapperParametrizedQuery<'Result>  (connection:IDbConnection) (query:string) (param:obj) : 'Result seq =
         connection.Query<'Result>(query, param)
 
-    let dapperParametrizedQueryFirstOrDefault<'Result>  (connection:SqlConnection) (query:string) (param:obj) : 'Result =
+    let dapperParametrizedQueryFirstOrDefault<'Result>  (connection:IDbConnection) (query:string) (param:obj) : 'Result =
         connection.QueryFirstOrDefault<'Result>(query, param)

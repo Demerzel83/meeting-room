@@ -9,7 +9,9 @@ group Server
     nuget FSharp.Core
     nuget Saturn
     nuget Thoth.Json.Giraffe
-    nuget Dapper
+    nuget FSharp.Data.Dapper
+    nuget FSharpPlus
+    nuget FSharp.Data.SqlClient
 
 group Client
     source https://api.nuget.org/v3/index.json

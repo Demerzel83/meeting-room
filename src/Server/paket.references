@@ -3,3 +3,6 @@ group Server
     Saturn
     Thoth.Json.Giraffe
     Dapper
+    FSharp.Data.Dapper
+    FSharpPlus
+    FSharp.Data.SqlClient

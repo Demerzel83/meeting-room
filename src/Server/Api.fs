@@ -8,11 +8,11 @@ open System
 open MeetingRoom.Shared
 open MeetingRoom.Infrastructure.MeetingRoomReader
 open MeetingRoom.Utils
-open System.Data.SqlClient
 open MeetingRoom.Utils.Sql
+open System.Data
 
 module Route =
-    let Definition (connection:SqlConnection) = router {
+    let Definition (connection:IDbConnection) = router {
         get "/api/meetingrooms" (fun next ctx ->
             task {
                 Dapper.SqlMapper.AddTypeHandler (Dapper.OptionHandler<string>()) // todo: rts
