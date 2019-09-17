@@ -1,10 +1,12 @@
 namespace MeetingRoom.Infrastructure
 
+open System.Data.SqlClient
 open Dapper
 open System
 
 open MeetingRoom.Utils.Dapper
 open MeetingRoom.Shared
+open FSharp.Data.Dapper
 open System.Data
 
 module MeetingRoomDb =
