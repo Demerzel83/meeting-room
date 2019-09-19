@@ -22,9 +22,11 @@ module Dapper =
             else Some (value :?> 'T)
 
     let dapperQuery<'Result>  (connection:IDbConnection) (query:string) =
+        Dapper.SqlMapper.AddTypeHandler (OptionHandler<string>())
         connection.Query<'Result>(query)
 
     let dapperParametrizedQuery<'Result>  (connection:IDbConnection) (query:string) (param:obj) : 'Result seq =
+        Dapper.SqlMapper.AddTypeHandler (OptionHandler<string>())
         connection.Query<'Result>(query, param)
 
     let dapperParametrizedQueryFirstOrDefault<'Result>  (connection:IDbConnection) (query:string) (param:obj) : 'Result =
