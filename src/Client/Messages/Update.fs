@@ -39,7 +39,7 @@ module Update =
                 Loading = true ;
                 MeetingRoomId = None ;
                 NewMeetingRoom =
-                {   Id = Guid.Empty ;
+                {   Id = 0 ;
                     Name = "" ;
                     Code = None } }
 
@@ -60,14 +60,14 @@ module Update =
         | NameUpdated name ->
             let newMeetingRoom =
                 match currentModel.MeetingRoom with
-                | None -> { Name = name; Code = None; Id = Guid.Empty }
+                | None -> { Name = name; Code = None; Id = 0 }
                 | Some mr -> { mr  with Name = name }
 
             { currentModel with MeetingRoom = (Some newMeetingRoom) }, Cmd.none
         | CodeUpdated code ->
             let newMeetingRoom =
                 match currentModel.MeetingRoom with
-                | None -> { Name = ""; Code = Some code; Id = Guid.Empty }
+                | None -> { Name = ""; Code = Some code; Id = 0 }
                 | Some mr -> { mr  with Code = Some code }
 
             { currentModel with MeetingRoom = (Some newMeetingRoom) }, Cmd.none
@@ -90,6 +90,6 @@ module Update =
                 MeetingRoom = None;
                 Loading = false;
                 MeetingRoomId = None;
-                NewMeetingRoom = { Id = Guid.NewGuid(); Name = ""; Code = None }
+                NewMeetingRoom = { Id = 0; Name = ""; Code = None }
             }
             nextModel, Navigation.newUrl "#list"

@@ -22,5 +22,5 @@ module MeetingRoomReader =
     let updateMeetingRoom (meetingRoom:MeetingRoom): Reader<IDbConnection, int>  =
         Reader (updateMeetingRoom meetingRoom)
 
-    let deleteMeetingRoom  (id:Guid): Reader<IDbConnection, int>  =
+    let deleteMeetingRoom  (id:int): Reader<IDbConnection, int>  =
         Reader (deleteMeetingRoom id)

@@ -15,7 +15,7 @@ module Functions =
             [
               map Page.New (s "new")
               map Page.List (s "list")
-              map Page.MeetingRoom (s "meetingroom" </> str)]
+              map Page.MeetingRoom (s "meetingroom" </> i32)]
 
     let urlParser location =
         parseHash pageParser location

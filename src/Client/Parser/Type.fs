@@ -5,4 +5,4 @@ module Type =
     type Page =
       | New
       | List
-      | MeetingRoom of string
+      | MeetingRoom of int

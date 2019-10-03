@@ -11,12 +11,12 @@ module Api =
     let getAllMeetingRooms ()
         = Fetch.fetchAs<MeetingRoom list> "/api/meetingrooms"
 
-    let getMeetingRoom (id:string)
-        = Fetch.fetchAs<MeetingRoom option> ("api/meetingrooms/" + id.ToString())
+    let getMeetingRoom (id:int)
+        = Fetch.fetchAs<MeetingRoom option> ("api/meetingrooms/" + (id.ToString()))
 
     let encode meetingRoom =
         Encode.object [
-            "Id", Encode.guid meetingRoom.Id
+            "Id", Encode.int meetingRoom.Id
             "Name", Encode.string meetingRoom.Name
             "Code", Encode.option Encode.string meetingRoom.Code
         ]
@@ -28,8 +28,8 @@ module Api =
         Fetch.post ("api/meetingrooms/new", (encode meetingRoom), Decode.int)
 
 
-    let deleteMeetingRoom (id : Guid) =
-        let url = sprintf "api/meetingrooms/%s" (id.ToString())
+    let deleteMeetingRoom (id : int) =
+        let url = sprintf "api/meetingrooms/%d" id
         Fetch.delete(url, null, Decode.int)
 
 

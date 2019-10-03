@@ -3,6 +3,7 @@
 .vs/
 .ionide/
 .paket/
+.vscode/
 paket.lock
 obj/
 bin/

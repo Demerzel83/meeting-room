@@ -8,7 +8,7 @@ module Type =
     // the state of the application changes *only* in reaction to these events
     type Msg =
       | InitialListLoaded of MeetingRoom list
-      | FetchFailure of string*exn
+      | FetchFailure of int*exn
       | FetchSuccess of MeetingRoom option
       | NameUpdated of string
       | CodeUpdated of string
@@ -16,6 +16,6 @@ module Type =
       | NewCodeUpdated of string
       | SaveMeetingRoom
       | SaveNewMeetingRoom
-      | DeleteMeetingRoom of Guid
+      | DeleteMeetingRoom of int
       | NewMeetingRoom
       | LoadMeetingRoomList

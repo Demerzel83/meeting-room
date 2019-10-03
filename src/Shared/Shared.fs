@@ -1,8 +1,6 @@
 namespace MeetingRoom.Shared
 
-open System
-
 type MeetingRoom =
-      { Id : Guid
+      { Id : int
         Name: string
         Code: string option }

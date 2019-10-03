@@ -16,7 +16,7 @@ module MeetingRoomDb =
             |> List.ofSeq
 
 
-    let getMeetingRoom (id:Guid) (connection:IDbConnection)  =
+    let getMeetingRoom (id:int) (connection:IDbConnection)  =
             let dp = DynamicParameters()
             dp.Add("Id", id)
 
@@ -31,16 +31,14 @@ module MeetingRoomDb =
 
     let insertMeetingRoom  meetingRoom (connection:IDbConnection) =
         let dp = DynamicParameters()
-        dp.Add("Id", Guid.NewGuid())
         dp.Add("Name", meetingRoom.Name)
         dp.Add("Code", Option.defaultValue null meetingRoom.Code)
 
         connection.Execute("
             INSERT INTO [dbo].[MeetingRooms]
-               ([Id]
-               ,[Name]
+               ([Name]
                ,[Code])
-         VALUES (@Id, @Name,@Code)", dp)
+         VALUES (@Name,@Code)", dp)
 
 
     let updateMeetingRoom meetingRoom (connection:IDbConnection) =
@@ -56,7 +54,7 @@ module MeetingRoomDb =
              WHERE [Id] = @Id", dp)
 
 
-    let deleteMeetingRoom (id:Guid)  (connection:IDbConnection) =
+    let deleteMeetingRoom (id:int)  (connection:IDbConnection) =
         let dp = DynamicParameters()
         dp.Add("Id", id)
 
