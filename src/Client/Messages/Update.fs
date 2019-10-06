@@ -6,7 +6,9 @@ open Elmish.Navigation
 
 open  MeetingRoom.Shared
 open UI.Model
-open UI.Api
+open UI.Api.MeetingRoom
+open UI.Api.Reservation
+open UI.Api.User
 open UI.Messages.Type
 open UI.Parser.Type
 
@@ -14,27 +16,35 @@ module Update =
     let always arg = fun _ -> arg
 
     let deleteMeetingRoomReload id =
-        Cmd.OfPromise.perform deleteMeetingRoom id (always LoadMeetingRoomList)
+        Cmd.OfPromise.perform deleteMeetingRoom id (always LoadMeetingRooms)
 
     let createMeeting meetingRoom =
-        Cmd.OfPromise.perform createMeetingRoom meetingRoom (always LoadMeetingRoomList)
+        Cmd.OfPromise.perform createMeetingRoom meetingRoom (always LoadMeetingRooms)
 
     let updatemr meetingRoom =
-        Cmd.OfPromise.perform updateMeetingRoom meetingRoom (always LoadMeetingRoomList)
+        Cmd.OfPromise.perform updateMeetingRoom meetingRoom (always LoadMeetingRooms)
 
     let loadMeetingRoom =
         Cmd.OfPromise.perform getAllMeetingRooms () InitialListLoaded
 
+    let loadReservation =
+        Cmd.OfPromise.perform getAllReservations () ReservationsLoaded
+
+    let loadUser =
+        Cmd.OfPromise.perform getAllUsers () UsersLoaded
+
     let updateMeeting meetingRoom =
         match meetingRoom with
-        | None -> Cmd.ofMsg LoadMeetingRoomList
+        | None -> Cmd.ofMsg LoadMeetingRooms
         | Some mr -> updatemr mr
 
 
     let init _ : Model * Cmd<Msg> =
         let initialModel =
-            {   Page = Page.List ;
+            {   Page = Page.MeetingRoomList ;
                 MeetingRooms = [] ;
+                Users = [] ;
+                Reservations = [] ;
                 MeetingRoom = None ;
                 Loading = true ;
                 MeetingRoomId = None ;
@@ -45,11 +55,29 @@ module Update =
 
         initialModel, loadMeetingRoom
 
+    let loadReservations model =
+        let modelLoading = { model  with Loading = true }
+        modelLoading, loadReservation
+
+    let loadUsers model =
+        let modelLoading = { model  with Loading = true }
+        modelLoading, loadUser
+
     let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
         match msg with
+        | LoadReservations ->
+            loadReservations currentModel
+        | ReservationsLoaded reservations ->
+            let modelWithReservations = { currentModel with Reservations = reservations; Loading = false }
+            modelWithReservations, Cmd.none
+        | LoadUsers ->
+            loadUsers currentModel
+        | UsersLoaded users ->
+            let modelWithUsers = { currentModel with Users = users; Loading = false }
+            modelWithUsers, Cmd.none
         | NewMeetingRoom ->
             currentModel, Navigation.newUrl "#new"
-        | LoadMeetingRoomList ->
+        | LoadMeetingRooms ->
             init()
         | DeleteMeetingRoom id ->
             currentModel, (deleteMeetingRoomReload id)
@@ -85,8 +113,10 @@ module Update =
         | FetchSuccess mr -> { currentModel with MeetingRoom = mr }, Cmd.none
         | InitialListLoaded meetingRooms->
             let nextModel = {
-                Page = Page.List;
+                Page = Page.MeetingRoomList;
                 MeetingRooms = meetingRooms;
+                Users = [];
+                Reservations = [];
                 MeetingRoom = None;
                 Loading = false;
                 MeetingRoomId = None;

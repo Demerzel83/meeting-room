@@ -1,12 +1,9 @@
 namespace MeetingRoom.Infrastructure
 
-open System.Data.SqlClient
 open Dapper
-open System
 
 open MeetingRoom.Utils.Dapper
 open MeetingRoom.Shared
-open FSharp.Data.Dapper
 open System.Data
 
 module MeetingRoomDb =
@@ -29,7 +26,7 @@ module MeetingRoomDb =
             | _ -> None
 
 
-    let insertMeetingRoom  meetingRoom (connection:IDbConnection) =
+    let insertMeetingRoom  (meetingRoom:MeetingRoom) (connection:IDbConnection) =
         let dp = DynamicParameters()
         dp.Add("Name", meetingRoom.Name)
         dp.Add("Code", Option.defaultValue null meetingRoom.Code)
@@ -41,7 +38,7 @@ module MeetingRoomDb =
          VALUES (@Name,@Code)", dp)
 
 
-    let updateMeetingRoom meetingRoom (connection:IDbConnection) =
+    let updateMeetingRoom (meetingRoom:MeetingRoom) (connection:IDbConnection) =
         let dp = DynamicParameters()
         dp.Add("Id", meetingRoom.Id)
         dp.Add("Name", meetingRoom.Name)

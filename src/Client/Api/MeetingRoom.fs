@@ -1,12 +1,11 @@
-namespace UI
+namespace UI.Api
 
 open Thoth.Fetch
 open Thoth.Json
-open System
 
 open  MeetingRoom.Shared
 
-module Api =
+module MeetingRoom =
 
     let getAllMeetingRooms ()
         = Fetch.fetchAs<MeetingRoom list> "/api/meetingrooms"
@@ -14,7 +13,7 @@ module Api =
     let getMeetingRoom (id:string)
         = Fetch.fetchAs<MeetingRoom option> ("api/meetingrooms/" + id)
 
-    let encode meetingRoom =
+    let encode (meetingRoom:MeetingRoom) =
         Encode.object [
             "Id", Encode.int meetingRoom.Id
             "Name", Encode.string meetingRoom.Name

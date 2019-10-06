@@ -6,7 +6,7 @@ open Fulma
 
 open UI.Model
 open UI.Messages.Type
-open UI.New
+open UI
 
 module View =
     let safeComponents =
@@ -38,9 +38,15 @@ module View =
             [div [] [str "Loading...."]]
         else
               match model.Page with
-              | Parser.Type.Page.New -> [newForm model dispatch]
-              | Parser.Type.Page.MeetingRoom _ -> [Edit.editForm model dispatch]
-              | Parser.Type.Page.List -> List.showList model.MeetingRooms dispatch
+              | Parser.Type.Page.MeetingRoomNew -> [MeetingRoom.New.newForm model dispatch]
+              | Parser.Type.Page.MeetingRoom _ -> [MeetingRoom.Edit.editForm model dispatch]
+              | Parser.Type.Page.MeetingRoomList -> MeetingRoom.List.showList model.MeetingRooms dispatch
+              | Parser.Type.Page.ReservationList -> Reservation.List.showList model.Reservations dispatch
+              | Parser.Type.Page.UserList -> User.List.showList model.Users dispatch
+
+    let menuItem label isActive =
+        Menu.Item.li [ Menu.Item.IsActive isActive ]
+            [ str label ]
 
     let view (model : Model) (dispatch : Msg -> unit) =
         div []
@@ -48,6 +54,12 @@ module View =
                 [ Navbar.Item.div [ ]
                     [ Heading.h2 [ ]
                         [ str "Meeting Room List" ] ] ]
+              Menu.menu [ ]
+                [ Menu.label [ ] [ str "General" ]
+                  Menu.list [ ]
+                    [ menuItem "Meeting Rooms" true
+                      menuItem "Users" false
+                      menuItem "Reservations" false ] ]
               Container.container []
                   [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
                       [ a [ Href ("#/new") ] [ str "New"]  ]

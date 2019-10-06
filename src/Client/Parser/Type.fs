@@ -3,6 +3,8 @@ namespace UI.Parser
 module Type =
     [<RequireQualifiedAccess>]
     type Page =
-      | New
-      | List
+      | MeetingRoomNew
+      | MeetingRoomList
       | MeetingRoom of string
+      | ReservationList
+      | UserList

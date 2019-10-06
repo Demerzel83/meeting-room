@@ -18,4 +18,10 @@ module Type =
       | SaveNewMeetingRoom
       | DeleteMeetingRoom of int
       | NewMeetingRoom
-      | LoadMeetingRoomList
+      | LoadMeetingRooms
+      | LoadReservations
+      | ReservationsLoaded of Reservation list
+      | DeleteReservation of int
+      | LoadUsers
+      | UsersLoaded of User list
+      | DeleteUser of int

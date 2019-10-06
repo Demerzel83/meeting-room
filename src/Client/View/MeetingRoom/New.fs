@@ -1,4 +1,4 @@
-namespace UI
+namespace UI.MeetingRoom
 
 open Fable.React
 open Fulma
@@ -30,6 +30,6 @@ module New =
                     [ Button.button [ Button.Color IsPrimary; Button.OnClick (fun _ -> dispatch SaveNewMeetingRoom) ]
                         [ str "Save" ] ]
                   Control.div [ ]
-                    [ Button.button [ Button.IsLink; Button.OnClick (fun _ -> dispatch LoadMeetingRoomList) ]
+                    [ Button.button [ Button.IsLink; Button.OnClick (fun _ -> dispatch LoadMeetingRooms) ]
                         [ str "Cancel" ] ] ]
         ]
