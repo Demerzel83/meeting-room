@@ -19,7 +19,7 @@ module Route =
 
                 return! json result next ctx
             })
-        getf "/api/meetingrooms/%d" (fun id next ctx ->
+        getf "/api/meetingrooms/%i" (fun id next ctx ->
             task {
                 let meetingRoom =
                     id
@@ -29,7 +29,7 @@ module Route =
 
                 return! json result next ctx
             })
-        deletef "/api/meetingrooms/%d" (fun id next ctx ->
+        deletef "/api/meetingrooms/%i" (fun id next ctx ->
             task {
                 let changes =
                     id

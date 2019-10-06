@@ -11,8 +11,8 @@ module Api =
     let getAllMeetingRooms ()
         = Fetch.fetchAs<MeetingRoom list> "/api/meetingrooms"
 
-    let getMeetingRoom (id:int)
-        = Fetch.fetchAs<MeetingRoom option> ("api/meetingrooms/" + (id.ToString()))
+    let getMeetingRoom (id:string)
+        = Fetch.fetchAs<MeetingRoom option> ("api/meetingrooms/" + id)
 
     let encode meetingRoom =
         Encode.object [

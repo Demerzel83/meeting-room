@@ -15,7 +15,7 @@ module Functions =
             [
               map Page.New (s "new")
               map Page.List (s "list")
-              map Page.MeetingRoom (s "meetingroom" </> i32)]
+              map Page.MeetingRoom (s "meetingroom" </> str)]
 
     let urlParser location =
         parseHash pageParser location
@@ -23,6 +23,6 @@ module Functions =
     let urlUpdate (result:Page option) model =
       match result with
       | Some (Page.MeetingRoom id) ->
-          { model with Page = (Page.MeetingRoom id) }, Cmd.OfPromise.either getMeetingRoom id FetchSuccess (fun ex -> FetchFailure (id,ex))
+          { model with Page = (Page.MeetingRoom id) }, Cmd.OfPromise.either getMeetingRoom (id.ToString()) FetchSuccess (fun ex -> FetchFailure (id,ex))
       | Some page -> { model with Page = page }, []
       | None -> { model with Page = Page.List }, []
