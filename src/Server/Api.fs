@@ -7,11 +7,27 @@ open System
 
 open MeetingRoom.Shared
 open MeetingRoom.Infrastructure.MeetingRoomReader
+open User.Infrastructure.UserReader
 open System.Data
 open FSharpPlus.Data
+open Reservation.Infrastructure.ReservationReader
 
 module Route =
     let Definition (connection:IDbConnection) = router {
+        get "/api/reservations" (fun next ctx ->
+            task {
+                let reservations = getAllReservations ()
+                let result = Reader.run reservations connection
+                return! json result next ctx
+            }
+        )
+        get "/api/users" (fun next ctx ->
+            task {
+                let users = getAllUsers()
+                let result = Reader.run users connection
+                return! json result next ctx
+            }
+        )
         get "/api/meetingrooms" (fun next ctx ->
             task {
                 let meetingRooms = getAllMeetingRooms()

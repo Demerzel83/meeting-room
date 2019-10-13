@@ -16,5 +16,5 @@ type Reservation =
       { Id : int
         MeetingRoomId : int
         UserId : int
-        From : DateTimeOffset
-        To : DateTimeOffset }
+        From : DateTime
+        To : DateTime }

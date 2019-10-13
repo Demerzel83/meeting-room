@@ -7,7 +7,7 @@ open  MeetingRoom.Shared
 module Reservation =
 
     let getAllReservations ()
-        = Fetch.fetchAs<Reservation list> "/api/reversations"
+        = Fetch.fetchAs<Reservation list> "/api/reservations"
 
 
 

@@ -7,6 +7,7 @@ open Fulma
 open UI.Model
 open UI.Messages.Type
 open UI
+open Fable.Core.JS
 
 module View =
     let safeComponents =
@@ -37,16 +38,22 @@ module View =
         if model.Loading then
             [div [] [str "Loading...."]]
         else
+              console.log ("Log", model.Page.ToString())
               match model.Page with
+              | Parser.Type.Page.UserList -> User.List.showList model.Users dispatch
               | Parser.Type.Page.MeetingRoomNew -> [MeetingRoom.New.newForm model dispatch]
               | Parser.Type.Page.MeetingRoom _ -> [MeetingRoom.Edit.editForm model dispatch]
               | Parser.Type.Page.MeetingRoomList -> MeetingRoom.List.showList model.MeetingRooms dispatch
               | Parser.Type.Page.ReservationList -> Reservation.List.showList model.Reservations dispatch
-              | Parser.Type.Page.UserList -> User.List.showList model.Users dispatch
+
 
     let menuItem label isActive =
         Menu.Item.li [ Menu.Item.IsActive isActive ]
             [ str label ]
+
+    let menuLink url label isActive =
+        Menu.Item.li [ Menu.Item.IsActive isActive ]
+            [ a [ Href url ] [ str label ]  ]
 
     let view (model : Model) (dispatch : Msg -> unit) =
         div []
@@ -57,12 +64,12 @@ module View =
               Menu.menu [ ]
                 [ Menu.label [ ] [ str "General" ]
                   Menu.list [ ]
-                    [ menuItem "Meeting Rooms" true
-                      menuItem "Users" false
-                      menuItem "Reservations" false ] ]
+                    [ menuLink "#/meetingroomList" "Meeting Rooms" true
+                      menuLink "#/userList" "Users" false
+                      menuLink "#/reservationList" "Reservations" false ] ]
               Container.container []
                   [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                      [ a [ Href ("#/new") ] [ str "New"]  ]
+                      [ a [ Href ("#/meetingroomNew") ] [ str "New"]  ]
                   ]
               Container.container []
                   [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]

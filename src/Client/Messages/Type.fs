@@ -9,7 +9,7 @@ module Type =
     type Msg =
       | InitialListLoaded of MeetingRoom list
       | FetchFailure of string*exn
-      | FetchSuccess of MeetingRoom option
+      | FetchMeetingRoomSuccess of MeetingRoom option
       | NameUpdated of string
       | CodeUpdated of string
       | NewNameUpdated of string

@@ -68,15 +68,15 @@ module Update =
         | LoadReservations ->
             loadReservations currentModel
         | ReservationsLoaded reservations ->
-            let modelWithReservations = { currentModel with Reservations = reservations; Loading = false }
+            let modelWithReservations = { currentModel with Reservations = reservations; Loading = false; Page = Page.ReservationList }
             modelWithReservations, Cmd.none
         | LoadUsers ->
             loadUsers currentModel
         | UsersLoaded users ->
-            let modelWithUsers = { currentModel with Users = users; Loading = false }
+            let modelWithUsers = { currentModel with Users = users; Loading = false; Page = Page.UserList }
             modelWithUsers, Cmd.none
         | NewMeetingRoom ->
-            currentModel, Navigation.newUrl "#new"
+            currentModel, Navigation.newUrl "#/meetingroomNew"
         | LoadMeetingRooms ->
             init()
         | DeleteMeetingRoom id ->
@@ -110,7 +110,7 @@ module Update =
 
             { currentModel with NewMeetingRoom = newMeetingRoom }, Cmd.none
         | FetchFailure _ -> { currentModel with MeetingRoom = None }, Cmd.none
-        | FetchSuccess mr -> { currentModel with MeetingRoom = mr }, Cmd.none
+        | FetchMeetingRoomSuccess mr -> { currentModel with MeetingRoom = mr }, Cmd.none
         | InitialListLoaded meetingRooms->
             let nextModel = {
                 Page = Page.MeetingRoomList;
@@ -122,4 +122,6 @@ module Update =
                 MeetingRoomId = None;
                 NewMeetingRoom = { Id = 0; Name = ""; Code = None }
             }
-            nextModel, Navigation.newUrl "#list"
+            nextModel, Navigation.newUrl "#/meetingroomList"
+        | DeleteReservation(_) -> failwith "Not Implemented"
+        | DeleteUser(_) -> failwith "Not Implemented"
