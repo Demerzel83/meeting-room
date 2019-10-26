@@ -8,12 +8,12 @@ open System.Data
 
 module MeetingRoomDb =
 
-    let getAllMeetingRooms (connection:IDbConnection) =
+    let getAll (connection:IDbConnection) =
             dapperQuery<MeetingRoom> connection "SELECT Id, Name, Code FROM dbo.MeetingRooms"
             |> List.ofSeq
 
 
-    let getMeetingRoom (id:int) (connection:IDbConnection)  =
+    let get (id:int) (connection:IDbConnection)  =
             let dp = DynamicParameters()
             dp.Add("Id", id)
 
@@ -26,7 +26,7 @@ module MeetingRoomDb =
             | _ -> None
 
 
-    let insertMeetingRoom  (meetingRoom:MeetingRoom) (connection:IDbConnection) =
+    let insert  (meetingRoom:MeetingRoom) (connection:IDbConnection) =
         let dp = DynamicParameters()
         dp.Add("Name", meetingRoom.Name)
         dp.Add("Code", Option.defaultValue null meetingRoom.Code)
@@ -38,7 +38,7 @@ module MeetingRoomDb =
          VALUES (@Name,@Code)", dp)
 
 
-    let updateMeetingRoom (meetingRoom:MeetingRoom) (connection:IDbConnection) =
+    let update (meetingRoom:MeetingRoom) (connection:IDbConnection) =
         let dp = DynamicParameters()
         dp.Add("Id", meetingRoom.Id)
         dp.Add("Name", meetingRoom.Name)
@@ -51,7 +51,7 @@ module MeetingRoomDb =
              WHERE [Id] = @Id", dp)
 
 
-    let deleteMeetingRoom (id:int)  (connection:IDbConnection) =
+    let delete (id:int)  (connection:IDbConnection) =
         let dp = DynamicParameters()
         dp.Add("Id", id)
 

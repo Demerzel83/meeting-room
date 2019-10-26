@@ -1,7 +1,5 @@
 namespace Reservation.Infrastructure
 
-open System
-
 open ReservationDb
 open MeetingRoom.Shared
 open FSharpPlus.Data
@@ -9,18 +7,18 @@ open System.Data
 
 module ReservationReader =
 
-    let getAllReservations (): Reader<IDbConnection, Reservation list> =
-        Reader getAllReservations
+    let getAll (): Reader<IDbConnection, Reservation list> =
+        Reader getAll
 
-    let getReservation id : Reader<IDbConnection, Reservation option> =
+    let get id : Reader<IDbConnection, Reservation option> =
         Reader
-         (getReservation id)
+         (get id)
 
-    // let insertMeetingRoom (meetingRoom:MeetingRoom): Reader<IDbConnection, int> =
-    //     Reader (insertMeetingRoom meetingRoom)
+    let insert (reservation:Reservation): Reader<IDbConnection, int> =
+        Reader (insert reservation)
 
-    // let updateMeetingRoom (meetingRoom:MeetingRoom): Reader<IDbConnection, int>  =
-    //     Reader (updateMeetingRoom meetingRoom)
+    let update (reservation:Reservation): Reader<IDbConnection, int>  =
+        Reader (update reservation)
 
-    // let deleteMeetingRoom  (id:int): Reader<IDbConnection, int>  =
-    //     Reader (deleteMeetingRoom id)
+    let delete  (id:int): Reader<IDbConnection, int>  =
+        Reader (delete id)

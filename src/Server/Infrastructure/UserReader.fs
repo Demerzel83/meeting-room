@@ -1,7 +1,5 @@
 namespace User.Infrastructure
 
-open System
-
 open UserDb
 open MeetingRoom.Shared
 open FSharpPlus.Data
@@ -9,18 +7,18 @@ open System.Data
 
 module UserReader =
 
-    let getAllUsers (): Reader<IDbConnection, User list> =
-        Reader getAllUsers
+    let getAll (): Reader<IDbConnection, User list> =
+        Reader getAll
 
-    let getUser id : Reader<IDbConnection, User option> =
+    let get id : Reader<IDbConnection, User option> =
         Reader
-         (getUser id)
+         (get id)
 
-    // let insertMeetingRoom (meetingRoom:MeetingRoom): Reader<IDbConnection, int> =
-    //     Reader (insertMeetingRoom meetingRoom)
+    let insert (user:User): Reader<IDbConnection, int> =
+        Reader (insert user)
 
-    // let updateMeetingRoom (meetingRoom:MeetingRoom): Reader<IDbConnection, int>  =
-    //     Reader (updateMeetingRoom meetingRoom)
+    let update (user:User): Reader<IDbConnection, int>  =
+        Reader (update user)
 
-    // let deleteMeetingRoom  (id:int): Reader<IDbConnection, int>  =
-    //     Reader (deleteMeetingRoom id)
+    let delete  (id:int): Reader<IDbConnection, int>  =
+        Reader (delete id)

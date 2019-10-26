@@ -8,12 +8,12 @@ open System.Data
 
 module ReservationDb =
 
-    let getAllReservations (connection:IDbConnection) =
+    let getAll (connection:IDbConnection) =
             dapperQuery<Reservation> connection "SELECT Id, MeetingRoomId, UserId, [From], [to] FROM dbo.Reservations"
             |> List.ofSeq
 
 
-    let getReservation (id:int) (connection:IDbConnection)  =
+    let get (id:int) (connection:IDbConnection)  =
             let dp = DynamicParameters()
             dp.Add("Id", id)
 
@@ -26,35 +26,42 @@ module ReservationDb =
             | _ -> None
 
 
-    // let insertMeetingRoom  (meetingRoom:MeetingRoom) (connection:IDbConnection) =
-    //     let dp = DynamicParameters()
-    //     dp.Add("Name", meetingRoom.Name)
-    //     dp.Add("Code", Option.defaultValue null meetingRoom.Code)
+    let insert  (reservation:Reservation) (connection:IDbConnection) =
+        let dp = DynamicParameters()
+        dp.Add("MeetingRoomId", reservation.MeetingRoomId)
+        dp.Add("UserId", reservation.UserId)
+        dp.Add("From", reservation.From)
+        dp.Add("To", reservation.To)
 
-    //     connection.Execute("
-    //         INSERT INTO [dbo].[MeetingRooms]
-    //            ([Name]
-    //            ,[Code])
-    //      VALUES (@Name,@Code)", dp)
-
-
-    // let updateMeetingRoom (meetingRoom:MeetingRoom) (connection:IDbConnection) =
-    //     let dp = DynamicParameters()
-    //     dp.Add("Id", meetingRoom.Id)
-    //     dp.Add("Name", meetingRoom.Name)
-    //     dp.Add("Code", Option.defaultValue null meetingRoom.Code)
-
-    //     connection.Execute("
-    //         UPDATE [dbo].[MeetingRooms]
-    //          SET [Name] = @Name
-    //            ,[Code] = @Code
-    //          WHERE [Id] = @Id", dp)
+        connection.Execute("
+            INSERT INTO [dbo].[Reservations]
+               ([MeetingRoomId]
+               ,[UserId]
+               ,[From]
+               ,[To])
+         VALUES (@MeetingRoomId,@UserId,@From,@To)", dp)
 
 
-    // let deleteMeetingRoom (id:int)  (connection:IDbConnection) =
-    //     let dp = DynamicParameters()
-    //     dp.Add("Id", id)
+    let update (reservation:Reservation) (connection:IDbConnection) =
+        let dp = DynamicParameters()
+        dp.Add("MeetingRoomId", reservation.MeetingRoomId)
+        dp.Add("UserId", reservation.UserId)
+        dp.Add("From", reservation.From)
+        dp.Add("To", reservation.To)
 
-    //     connection.Execute("
-    //         DELETE FROM [dbo].[MeetingRooms]
-    //          WHERE [Id] = @Id", dp)
+        connection.Execute("
+            UPDATE [dbo].[Reservations]
+             SET [MeetingRoomId] = @MeetingRoomId
+               ,[UserId] = @UserId
+               ,[From] = @From
+               ,[To] = @To
+             WHERE [Id] = @Id", dp)
+
+
+    let delete (id:int)  (connection:IDbConnection) =
+        let dp = DynamicParameters()
+        dp.Add("Id", id)
+
+        connection.Execute("
+            DELETE FROM [dbo].[Reservation]
+             WHERE [Id] = @Id", dp)
