@@ -22,6 +22,8 @@ module Type =
       | LoadReservations
       | ReservationsLoaded of Reservation list
       | DeleteReservation of int
+      | FetchReservationSuccess of Reservation option
       | LoadUsers
       | UsersLoaded of User list
       | DeleteUser of int
+      | FetchUserSuccess of User option

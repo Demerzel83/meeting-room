@@ -12,9 +12,9 @@ module ReservationReader =
     let getAllReservations (): Reader<IDbConnection, Reservation list> =
         Reader getAllReservations
 
-    // let getMeetingRoom id : Reader<IDbConnection, MeetingRoom option> =
-    //     Reader
-    //      (getMeetingRoom id)
+    let getReservation id : Reader<IDbConnection, Reservation option> =
+        Reader
+         (getReservation id)
 
     // let insertMeetingRoom (meetingRoom:MeetingRoom): Reader<IDbConnection, int> =
     //     Reader (insertMeetingRoom meetingRoom)

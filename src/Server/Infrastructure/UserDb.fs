@@ -13,17 +13,17 @@ module UserDb =
             |> List.ofSeq
 
 
-    // let getMeetingRoom (id:int) (connection:IDbConnection)  =
-    //         let dp = DynamicParameters()
-    //         dp.Add("Id", id)
+    let getUser (id:int) (connection:IDbConnection)  =
+            let dp = DynamicParameters()
+            dp.Add("Id", id)
 
-    //         let mr =
-    //             dapperParametrizedQuery<MeetingRoom> connection "SELECT Id, Name, Code FROM dbo.MeetingRooms WHERE Id = @Id" dp
-    //             |> List.ofSeq
+            let mr =
+                dapperParametrizedQuery<User> connection "SELECT Id, Name, Surname, Email FROM dbo.Users WHERE Id = @Id" dp
+                |> List.ofSeq
 
-    //         match mr with
-    //         | [mro] -> Some mro
-    //         | _ -> None
+            match mr with
+            | [mro] -> Some mro
+            | _ -> None
 
 
     // let insertMeetingRoom  (meetingRoom:MeetingRoom) (connection:IDbConnection) =

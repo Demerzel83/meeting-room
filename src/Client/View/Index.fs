@@ -8,6 +8,7 @@ open UI.Model
 open UI.Messages.Type
 open UI
 open Fable.Core.JS
+open UI.Parser.Type
 
 module View =
     let safeComponents =
@@ -36,15 +37,19 @@ module View =
 
     let showContent (model:Model) (dispatch : Msg -> unit) =
         if model.Loading then
-            [div [] [str "Loading...."]]
+            div [] [str "Loading...."]
         else
-              console.log ("Log", model.Page.ToString())
+              console.log ("Page", model.Page)
               match model.Page with
-              | Parser.Type.Page.UserList -> User.List.showList model.Users dispatch
-              | Parser.Type.Page.MeetingRoomNew -> [MeetingRoom.New.newForm model dispatch]
-              | Parser.Type.Page.MeetingRoom _ -> [MeetingRoom.Edit.editForm model dispatch]
-              | Parser.Type.Page.MeetingRoomList -> MeetingRoom.List.showList model.MeetingRooms dispatch
-              | Parser.Type.Page.ReservationList -> Reservation.List.showList model.Reservations dispatch
+              | Page.MeetingRoomList -> MeetingRoom.List.showList model.MeetingRooms dispatch
+              | Page.ReservationList -> Reservation.List.showList model.Reservations dispatch
+              | Page.UserList -> User.List.showList model.Users dispatch
+              | Page.MeetingRoomNew -> MeetingRoom.New.newForm model dispatch
+              | Page.MeetingRoom _ -> MeetingRoom.Edit.editForm model dispatch
+              | Page.User _ -> User.Edit.editForm model dispatch
+              | Page.Reservation _ -> Reservation.Edit.editForm model dispatch
+              | Page.ReservationNew -> Reservation.New.newForm model dispatch
+              | Page.UserNew -> User.New.newForm model dispatch
 
 
     let menuItem label isActive =
@@ -69,11 +74,16 @@ module View =
                       menuLink "#/reservationList" "Reservations" false ] ]
               Container.container []
                   [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                      [ a [ Href ("#/meetingroomNew") ] [ str "New"]  ]
+                      ( match model.Page with
+                        | Page.MeetingRoomList -> [ a [ Href ("#/meetingroomNew") ] [ str "New"]  ]
+                        | Page.ReservationList -> [ a [ Href ("#/reservationNew") ] [ str "New"]  ]
+                        | Page.UserList -> [ a [ Href ("#/userNew") ] [ str "New"]  ]
+                        | _ -> [ str "Other"] )
+
                   ]
               Container.container []
                   [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                      (showContent model dispatch)
+                      [showContent model dispatch]
                   ]
               Footer.footer [ ]
                     [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]

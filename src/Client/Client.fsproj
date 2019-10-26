@@ -19,7 +19,11 @@
         <Compile Include="View\MeetingRoom\Edit.fs" />
         <Compile Include="View\MeetingRoom\New.fs" />
         <Compile Include="View\MeetingRoom\List.fs" />
+        <Compile Include="View\Users\Edit.fs" />
+        <Compile Include="View\Users\New.fs" />
         <Compile Include="View\Users\List.fs" />
+        <Compile Include="View\Reservations\Edit.fs" />
+        <Compile Include="View\Reservations\New.fs" />
         <Compile Include="View\Reservations\List.fs" />
         <Compile Include="View\Index.fs" />
         <Compile Include="Messages\Update.fs" />

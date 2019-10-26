@@ -40,7 +40,7 @@ module Update =
 
 
     let init _ : Model * Cmd<Msg> =
-        let initialModel =
+        let initialModel:Model =
             {   Page = Page.MeetingRoomList ;
                 MeetingRooms = [] ;
                 Users = [] ;
@@ -48,10 +48,25 @@ module Update =
                 MeetingRoom = None ;
                 Loading = true ;
                 MeetingRoomId = None ;
-                NewMeetingRoom =
-                {   Id = 0 ;
+                NewMeetingRoom = {
+                    Id = 0 ;
                     Name = "" ;
-                    Code = None } }
+                    Code = None };
+                UserId = None;
+                ReservationId = None;
+                Reservation = None;
+                User = None;
+                NewUser = {
+                    Id = 0;
+                    Name = None;
+                    Surname = None;
+                    Email = "" };
+                NewReservation = {
+                    Id = 0;
+                    MeetingRoomId = 0;
+                    UserId = 0;
+                    From = DateTime.Now;
+                    To = DateTime.Now }}
 
         initialModel, loadMeetingRoom
 
@@ -111,8 +126,10 @@ module Update =
             { currentModel with NewMeetingRoom = newMeetingRoom }, Cmd.none
         | FetchFailure _ -> { currentModel with MeetingRoom = None }, Cmd.none
         | FetchMeetingRoomSuccess mr -> { currentModel with MeetingRoom = mr }, Cmd.none
+        | FetchUserSuccess user -> { currentModel with User = user }, Cmd.none
+        | FetchReservationSuccess reservation -> { currentModel with Reservation = reservation }, Cmd.none
         | InitialListLoaded meetingRooms->
-            let nextModel = {
+            let nextModel:Model = {
                 Page = Page.MeetingRoomList;
                 MeetingRooms = meetingRooms;
                 Users = [];
@@ -120,8 +137,22 @@ module Update =
                 MeetingRoom = None;
                 Loading = false;
                 MeetingRoomId = None;
-                NewMeetingRoom = { Id = 0; Name = ""; Code = None }
-            }
+                NewMeetingRoom = { Id = 0; Name = ""; Code = None };
+                 UserId = None;
+                ReservationId = None;
+                Reservation = None;
+                User = None;
+                NewUser = {
+                    Id = 0;
+                    Name = None;
+                    Surname = None;
+                    Email = "" };
+                NewReservation = {
+                    Id = 0;
+                    MeetingRoomId = 0;
+                    UserId = 0;
+                    From = DateTime.Now;
+                    To = DateTime.Now }}
             nextModel, Navigation.newUrl "#/meetingroomList"
         | DeleteReservation(_) -> failwith "Not Implemented"
         | DeleteUser(_) -> failwith "Not Implemented"

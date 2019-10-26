@@ -19,7 +19,7 @@ module List =
                                                             [ str "Delete" ] ] ]) reservations
 
     let showList users (dispatch : Msg -> unit) =
-      [ Table.table [ Table.IsHoverable ]
+       Table.table [ Table.IsHoverable ]
                             [ thead [ ]
                                 [ tr [ ]
                                     [ th [ ] [ str "Id" ]
@@ -28,4 +28,4 @@ module List =
                                       th [ ] [ str "Email"] ] ]
                               tbody [ ]
                                  (showRows users dispatch)
-                                   ] ]
+                                   ]

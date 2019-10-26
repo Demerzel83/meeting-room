@@ -21,6 +21,26 @@ module Route =
                 return! json result next ctx
             }
         )
+        getf "/api/reservations/%i" (fun id next ctx ->
+            task {
+                let reservation =
+                    id
+                    |> getReservation
+
+                let result = Reader.run reservation connection
+
+                return! json result next ctx
+            })
+        getf "/api/users/%i" (fun id next ctx ->
+            task {
+                let user =
+                    id
+                    |> getUser
+
+                let result = Reader.run user connection
+
+                return! json result next ctx
+            })
         get "/api/users" (fun next ctx ->
             task {
                 let users = getAllUsers()
