@@ -8,7 +8,7 @@ open UI.Messages.Type
 open UI.Parser.Type
 open UI.Api.MeetingRoom
 open UI.Api.User
-open UI.Api.Reservation
+open UI.Api
 
 module Functions =
     /// The URL is turned into a Page option.
@@ -34,13 +34,13 @@ module Functions =
       | Some (Page.UserList) ->
         model, Cmd.OfPromise.either getAllUsers () UsersLoaded (fun ex -> FetchFailure ("error", ex))
       | Some (Page.ReservationList) ->
-        { model with Loading = true}, Cmd.OfPromise.either getAllReservations () ReservationsLoaded (fun ex -> FetchFailure ("error", ex))
+        { model with Loading = true}, Cmd.OfPromise.either Reservation.getAll () ReservationsLoaded (fun ex -> FetchFailure ("error", ex))
       | Some (Page.MeetingRoom id) ->
           { model with Page = (Page.MeetingRoom id) }, Cmd.OfPromise.either getMeetingRoom (id.ToString()) FetchMeetingRoomSuccess (fun ex -> FetchFailure (id,ex))
       | Some (Page.User id) ->
           { model with Page = (Page.User id) }, Cmd.OfPromise.either getUser (id.ToString()) FetchUserSuccess (fun ex -> FetchFailure (id,ex))
       | Some (Page.Reservation id) ->
-          { model with Page = (Page.Reservation id) }, Cmd.OfPromise.either getReservation (id.ToString()) FetchReservationSuccess (fun ex -> FetchFailure (id,ex))
+          { model with Page = (Page.Reservation id) }, Cmd.OfPromise.either Reservation.get (id.ToString()) FetchReservationSuccess (fun ex -> FetchFailure (id,ex))
 
       | Some page -> { model with Page = page }, Cmd.none
       | None -> { model with Page = Page.MeetingRoomList }, Cmd.none

@@ -27,3 +27,9 @@ module Type =
       | UsersLoaded of User list
       | DeleteUser of int
       | FetchUserSuccess of User option
+      | MeetingRoomUpdated of string
+      | UserUpdated of string
+      | FromUpdated of string
+      | ToUpdated of string
+      | SaveReservation
+      | SaveNewReservation

@@ -24,11 +24,20 @@ module Update =
     let updatemr meetingRoom =
         Cmd.OfPromise.perform updateMeetingRoom meetingRoom (always LoadMeetingRooms)
 
+
     let loadMeetingRoom =
         Cmd.OfPromise.perform getAllMeetingRooms () InitialListLoaded
 
-    let loadReservation =
-        Cmd.OfPromise.perform getAllReservations () ReservationsLoaded
+    let loadReservations =
+        Cmd.OfPromise.perform getAll () ReservationsLoaded
+
+    let updateReservation reservation =
+        match reservation with
+        | None -> loadReservations
+        | Some r -> Cmd.OfPromise.perform update r (always LoadReservations)
+
+    let createReservation reservation =
+        Cmd.OfPromise.perform create reservation (always LoadReservations)
 
     let loadUser =
         Cmd.OfPromise.perform getAllUsers () UsersLoaded
@@ -70,9 +79,9 @@ module Update =
 
         initialModel, loadMeetingRoom
 
-    let loadReservations model =
+    let loadAllReservations model =
         let modelLoading = { model  with Loading = true }
-        modelLoading, loadReservation
+        modelLoading, loadReservations
 
     let loadUsers model =
         let modelLoading = { model  with Loading = true }
@@ -81,7 +90,7 @@ module Update =
     let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
         match msg with
         | LoadReservations ->
-            loadReservations currentModel
+            loadAllReservations currentModel
         | ReservationsLoaded reservations ->
             let modelWithReservations = { currentModel with Reservations = reservations; Loading = false; Page = Page.ReservationList }
             modelWithReservations, Cmd.none
@@ -124,6 +133,36 @@ module Update =
                { currentModel.NewMeetingRoom  with Code = Some code}
 
             { currentModel with NewMeetingRoom = newMeetingRoom }, Cmd.none
+        | MeetingRoomUpdated meetingRoomId ->
+            let updatedReservation =
+                match currentModel.Reservation with
+                | None -> { From =  DateTime.Now; To = DateTime.Now; MeetingRoomId = meetingRoomId |> int ; Id = 0; UserId = 0 }
+                | Some r -> { r  with MeetingRoomId = meetingRoomId |> int }
+            { currentModel with Reservation = Some updatedReservation }, Cmd.none
+        | UserUpdated userId ->
+            let updatedReservation =
+                match currentModel.Reservation with
+                | None -> { From =  DateTime.Now; To = DateTime.Now; MeetingRoomId = 0 ; Id = 0; UserId = userId |> int }
+                | Some r -> { r  with UserId = userId |> int }
+            { currentModel with Reservation = Some updatedReservation }, Cmd.none
+
+        | FromUpdated from ->
+            let updatedReservation =
+                match currentModel.Reservation with
+                | None -> { From = from |> DateTime.Parse; To = DateTime.Now; MeetingRoomId = 0 ; Id = 0; UserId = 0 }
+                | Some r -> { r  with From = from |> DateTime.Parse; }
+            { currentModel with Reservation = Some updatedReservation }, Cmd.none
+
+        | ToUpdated toDate ->
+            let updatedReservation =
+                match currentModel.Reservation with
+                | None -> { To = toDate |> DateTime.Parse; From = DateTime.Now; MeetingRoomId = 0 ; Id = 0; UserId = 0 }
+                | Some r -> { r  with To = toDate |> DateTime.Parse; }
+            { currentModel with Reservation = Some updatedReservation }, Cmd.none
+        | SaveReservation ->
+            currentModel, (updateReservation currentModel.Reservation)
+        | SaveNewReservation ->
+            currentModel, (createReservation currentModel.NewReservation)
         | FetchFailure _ -> { currentModel with MeetingRoom = None }, Cmd.none
         | FetchMeetingRoomSuccess mr -> { currentModel with MeetingRoom = mr }, Cmd.none
         | FetchUserSuccess user -> { currentModel with User = user }, Cmd.none

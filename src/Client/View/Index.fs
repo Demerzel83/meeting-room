@@ -61,6 +61,8 @@ module View =
             [ a [ Href url ] [ str label ]  ]
 
     let view (model : Model) (dispatch : Msg -> unit) =
+        let isPage = (=) model.Page
+
         div []
             [ Navbar.navbar [ Navbar.Color IsPrimary ]
                 [ Navbar.Item.div [ ]
@@ -69,9 +71,9 @@ module View =
               Menu.menu [ ]
                 [ Menu.label [ ] [ str "General" ]
                   Menu.list [ ]
-                    [ menuLink "#/meetingroomList" "Meeting Rooms" true
-                      menuLink "#/userList" "Users" false
-                      menuLink "#/reservationList" "Reservations" false ] ]
+                    [ menuLink "#/meetingroomList" "Meeting Rooms" (isPage Page.MeetingRoomList)
+                      menuLink "#/userList" "Users" (isPage Page.UserList)
+                      menuLink "#/reservationList" "Reservations" (isPage Page.ReservationList) ] ]
               Container.container []
                   [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
                       ( match model.Page with
