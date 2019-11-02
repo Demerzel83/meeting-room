@@ -9,11 +9,9 @@ module Type =
     type Msg =
       | InitialListLoaded of MeetingRoom list
       | FetchFailure of string*exn
-      | FetchMeetingRoomSuccess of MeetingRoom option
-      | NameUpdated of string
-      | CodeUpdated of string
-      | NewNameUpdated of string
-      | NewCodeUpdated of string
+      | FetchMeetingRoomSuccess of MeetingRoom
+      | MeetingRoomNameUpdated of string
+      | MeetingRoomCodeUpdated of string
       | SaveMeetingRoom
       | SaveNewMeetingRoom
       | DeleteMeetingRoom of int
@@ -22,14 +20,19 @@ module Type =
       | LoadReservations
       | ReservationsLoaded of Reservation list
       | DeleteReservation of int
-      | FetchReservationSuccess of Reservation option
+      | FetchReservationSuccess of Reservation
       | LoadUsers
       | UsersLoaded of User list
       | DeleteUser of int
-      | FetchUserSuccess of User option
+      | FetchUserSuccess of User
       | MeetingRoomUpdated of string
       | UserUpdated of string
       | FromUpdated of string
       | ToUpdated of string
       | SaveReservation
       | SaveNewReservation
+      | UserNameUpdated of string
+      | EmailUpdated of string
+      | SurnameUpdated of string
+      | SaveUser
+      | SaveNewUser

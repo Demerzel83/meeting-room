@@ -29,29 +29,29 @@ module UserDb =
     let insert  (user:User) (connection:IDbConnection) =
         let dp = DynamicParameters()
         dp.Add("Name", user.Name)
-        dp.Add("Surname", Option.defaultValue null user.Surname)
         dp.Add("Email", user.Email)
+        dp.Add("Surname", Option.defaultValue null user.Surname)
 
         connection.Execute("
             INSERT INTO [dbo].[Users]
                ([Name]
-               ,[Surname]
-               ,[Email])
-         VALUES (@Name,@Surname,@Email)", dp)
+               ,[Email]
+               ,[Surname])
+         VALUES (@Name,@Email,@Surname)", dp)
 
 
     let update (user:User) (connection:IDbConnection) =
         let dp = DynamicParameters()
         dp.Add("Id", user.Id)
         dp.Add("Name", user.Name)
-        dp.Add("Surname", Option.defaultValue null user.Surname)
         dp.Add("Email", user.Email)
+        dp.Add("Surname", Option.defaultValue null user.Surname)
 
         connection.Execute("
             UPDATE [dbo].[Users]
              SET [Name] = @Name
-               ,[Surname] = @Surname
                ,[Email] = @Email
+               ,[Surname] = @Surname
              WHERE [Id] = @Id", dp)
 
 

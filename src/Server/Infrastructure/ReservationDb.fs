@@ -48,6 +48,7 @@ module ReservationDb =
         dp.Add("UserId", reservation.UserId)
         dp.Add("From", reservation.From)
         dp.Add("To", reservation.To)
+        dp.Add("Id", reservation.Id)
 
         connection.Execute("
             UPDATE [dbo].[Reservations]
@@ -63,5 +64,5 @@ module ReservationDb =
         dp.Add("Id", id)
 
         connection.Execute("
-            DELETE FROM [dbo].[Reservation]
+            DELETE FROM [dbo].[Reservations]
              WHERE [Id] = @Id", dp)

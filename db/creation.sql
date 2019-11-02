@@ -110,7 +110,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Reservations](
-	[Id] [int] NOT NULL,
+	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[MeetingRoomId] [int] NOT NULL,
 	[UserId] [int] NOT NULL,
 	[From] [datetime2](7) NOT NULL,

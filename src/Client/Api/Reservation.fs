@@ -11,7 +11,7 @@ module Reservation =
         = Fetch.fetchAs<Reservation list> "/api/reservations"
 
     let get (id:string)
-        = Fetch.fetchAs<Reservation option> ("api/reservations/" + id)
+        = Fetch.fetchAs<Reservation> ("api/reservations/" + id)
 
     let encode (meetingRoom:Reservation) =
         Encode.object [

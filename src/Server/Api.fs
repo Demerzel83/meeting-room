@@ -83,7 +83,7 @@ module Route =
 
                 return! json result next ctx
             })
-        put "/api/users/" (fun next ctx ->
+        put "/api/users" (fun next ctx ->
             task {
                 let! user = Controller.getModel<User> ctx
                 let result = Reader.run (UserReader.update user) connection

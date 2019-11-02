@@ -15,16 +15,16 @@ module New =
                         [ str "Name" ]
                       Control.div [ ]
                         [ Input.text [
-                            Input.Value model.NewMeetingRoom.Name;
-                            Input.OnChange (fun event -> dispatch (NewNameUpdated event.Value) ) ] ] ]
+                            Input.Value model.MeetingRoom.Name;
+                            Input.OnChange (fun event -> dispatch (MeetingRoomNameUpdated event.Value) ) ] ] ]
                // Username field
                Field.div [ ]
                     [ Label.label [ ]
                         [ str "Code" ]
                       Control.div [ ]
                         [ Input.text [
-                            Input.Value (Option.defaultValue ""  model.NewMeetingRoom.Code);
-                            Input.OnChange (fun event -> dispatch (NewCodeUpdated event.Value)) ] ] ]
+                            Input.Value (Option.defaultValue ""  model.MeetingRoom.Code);
+                            Input.OnChange (fun event -> dispatch (MeetingRoomCodeUpdated event.Value)) ] ] ]
                Field.div [ Field.IsGrouped ]
                 [ Control.div [ ]
                     [ Button.button [ Button.Color IsPrimary; Button.OnClick (fun _ -> dispatch SaveNewMeetingRoom) ]

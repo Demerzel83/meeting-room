@@ -7,8 +7,7 @@ open Elmish.Navigation
 open  MeetingRoom.Shared
 open UI.Model
 open UI.Api.MeetingRoom
-open UI.Api.Reservation
-open UI.Api.User
+open UI.Api
 open UI.Messages.Type
 open UI.Parser.Type
 
@@ -29,23 +28,31 @@ module Update =
         Cmd.OfPromise.perform getAllMeetingRooms () InitialListLoaded
 
     let loadReservations =
-        Cmd.OfPromise.perform getAll () ReservationsLoaded
+        Cmd.OfPromise.perform Reservation.getAll () ReservationsLoaded
 
     let updateReservation reservation =
-        match reservation with
-        | None -> loadReservations
-        | Some r -> Cmd.OfPromise.perform update r (always LoadReservations)
+        Cmd.OfPromise.perform Reservation.update reservation (always LoadReservations)
 
     let createReservation reservation =
-        Cmd.OfPromise.perform create reservation (always LoadReservations)
+        Cmd.OfPromise.perform Reservation.create reservation (always LoadReservations)
 
-    let loadUser =
-        Cmd.OfPromise.perform getAllUsers () UsersLoaded
+    let deleteReservation id =
+        Cmd.OfPromise.perform Reservation.delete id (always LoadReservations)
+
+    let loadUsers =
+        Cmd.OfPromise.perform User.getAll () UsersLoaded
+
+    let updateUser user =
+        Cmd.OfPromise.perform User.update user (always LoadUsers)
+
+    let createUser user =
+        Cmd.OfPromise.perform User.create user (always LoadUsers)
+
+    let deleteUser id =
+        Cmd.OfPromise.perform User.delete id (always LoadUsers)
 
     let updateMeeting meetingRoom =
-        match meetingRoom with
-        | None -> Cmd.ofMsg LoadMeetingRooms
-        | Some mr -> updatemr mr
+        updatemr meetingRoom
 
 
     let init _ : Model * Cmd<Msg> =
@@ -54,23 +61,20 @@ module Update =
                 MeetingRooms = [] ;
                 Users = [] ;
                 Reservations = [] ;
-                MeetingRoom = None ;
                 Loading = true ;
                 MeetingRoomId = None ;
-                NewMeetingRoom = {
+                MeetingRoom = {
                     Id = 0 ;
                     Name = "" ;
                     Code = None };
                 UserId = None;
                 ReservationId = None;
-                Reservation = None;
-                User = None;
-                NewUser = {
+                User = {
                     Id = 0;
                     Name = None;
                     Surname = None;
                     Email = "" };
-                NewReservation = {
+                Reservation = {
                     Id = 0;
                     MeetingRoomId = 0;
                     UserId = 0;
@@ -83,9 +87,9 @@ module Update =
         let modelLoading = { model  with Loading = true }
         modelLoading, loadReservations
 
-    let loadUsers model =
+    let loadAllUsers model =
         let modelLoading = { model  with Loading = true }
-        modelLoading, loadUser
+        modelLoading, loadUsers
 
     let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
         match msg with
@@ -95,7 +99,7 @@ module Update =
             let modelWithReservations = { currentModel with Reservations = reservations; Loading = false; Page = Page.ReservationList }
             modelWithReservations, Cmd.none
         | LoadUsers ->
-            loadUsers currentModel
+            loadAllUsers currentModel
         | UsersLoaded users ->
             let modelWithUsers = { currentModel with Users = users; Loading = false; Page = Page.UserList }
             modelWithUsers, Cmd.none
@@ -106,92 +110,79 @@ module Update =
         | DeleteMeetingRoom id ->
             currentModel, (deleteMeetingRoomReload id)
         | SaveNewMeetingRoom ->
-            currentModel, (createMeeting currentModel.NewMeetingRoom)
+            currentModel, (createMeeting currentModel.MeetingRoom)
         | SaveMeetingRoom ->
             currentModel, (updateMeeting currentModel.MeetingRoom )
-        | NameUpdated name ->
-            let newMeetingRoom =
-                match currentModel.MeetingRoom with
-                | None -> { Name = name; Code = None; Id = 0 }
-                | Some mr -> { mr  with Name = name }
+        | SaveUser ->
+            currentModel, (updateUser currentModel.User)
+        | SaveNewUser ->
+            currentModel, (createUser currentModel.User)
+        | MeetingRoomNameUpdated name ->
+            let newMeetingRoom = { currentModel.MeetingRoom  with Name = name }
 
-            { currentModel with MeetingRoom = (Some newMeetingRoom) }, Cmd.none
-        | CodeUpdated code ->
-            let newMeetingRoom =
-                match currentModel.MeetingRoom with
-                | None -> { Name = ""; Code = Some code; Id = 0 }
-                | Some mr -> { mr  with Code = Some code }
+            { currentModel with MeetingRoom = newMeetingRoom }, Cmd.none
+        | MeetingRoomCodeUpdated code ->
+            let newMeetingRoom =  { currentModel.MeetingRoom  with Code = Some code }
 
-            { currentModel with MeetingRoom = (Some newMeetingRoom) }, Cmd.none
-        | NewNameUpdated name ->
-            let newMeetingRoom =
-                 { currentModel.NewMeetingRoom  with Name = name}
-
-            { currentModel with NewMeetingRoom = newMeetingRoom }, Cmd.none
-        | NewCodeUpdated code ->
-            let newMeetingRoom =
-               { currentModel.NewMeetingRoom  with Code = Some code}
-
-            { currentModel with NewMeetingRoom = newMeetingRoom }, Cmd.none
+            { currentModel with MeetingRoom = newMeetingRoom }, Cmd.none
         | MeetingRoomUpdated meetingRoomId ->
             let updatedReservation =
-                match currentModel.Reservation with
-                | None -> { From =  DateTime.Now; To = DateTime.Now; MeetingRoomId = meetingRoomId |> int ; Id = 0; UserId = 0 }
-                | Some r -> { r  with MeetingRoomId = meetingRoomId |> int }
-            { currentModel with Reservation = Some updatedReservation }, Cmd.none
+                { currentModel.Reservation  with MeetingRoomId = meetingRoomId |> int }
+            { currentModel with Reservation =  updatedReservation }, Cmd.none
         | UserUpdated userId ->
-            let updatedReservation =
-                match currentModel.Reservation with
-                | None -> { From =  DateTime.Now; To = DateTime.Now; MeetingRoomId = 0 ; Id = 0; UserId = userId |> int }
-                | Some r -> { r  with UserId = userId |> int }
-            { currentModel with Reservation = Some updatedReservation }, Cmd.none
+            let updatedReservation = { currentModel.Reservation  with UserId = userId |> int }
+            { currentModel with Reservation = updatedReservation }, Cmd.none
 
         | FromUpdated from ->
-            let updatedReservation =
-                match currentModel.Reservation with
-                | None -> { From = from |> DateTime.Parse; To = DateTime.Now; MeetingRoomId = 0 ; Id = 0; UserId = 0 }
-                | Some r -> { r  with From = from |> DateTime.Parse; }
-            { currentModel with Reservation = Some updatedReservation }, Cmd.none
+            let updatedReservation =  { currentModel.Reservation  with From = from |> DateTime.Parse; }
+            { currentModel with Reservation = updatedReservation }, Cmd.none
 
         | ToUpdated toDate ->
-            let updatedReservation =
-                match currentModel.Reservation with
-                | None -> { To = toDate |> DateTime.Parse; From = DateTime.Now; MeetingRoomId = 0 ; Id = 0; UserId = 0 }
-                | Some r -> { r  with To = toDate |> DateTime.Parse; }
-            { currentModel with Reservation = Some updatedReservation }, Cmd.none
+            let updatedReservation =  { currentModel.Reservation  with To = toDate |> DateTime.Parse; }
+            { currentModel with Reservation = updatedReservation }, Cmd.none
         | SaveReservation ->
             currentModel, (updateReservation currentModel.Reservation)
         | SaveNewReservation ->
-            currentModel, (createReservation currentModel.NewReservation)
-        | FetchFailure _ -> { currentModel with MeetingRoom = None }, Cmd.none
-        | FetchMeetingRoomSuccess mr -> { currentModel with MeetingRoom = mr }, Cmd.none
-        | FetchUserSuccess user -> { currentModel with User = user }, Cmd.none
-        | FetchReservationSuccess reservation -> { currentModel with Reservation = reservation }, Cmd.none
+            currentModel, (createReservation currentModel.Reservation)
+        | FetchFailure _ -> { currentModel with Loading = false }, Cmd.none
+        | FetchMeetingRoomSuccess mr -> { currentModel with MeetingRoom = mr; Loading = false }, Cmd.none
+        | FetchUserSuccess user ->
+            { currentModel with User = user }, Cmd.none
+        | FetchReservationSuccess reservation ->
+            { currentModel with Reservation = reservation }, Cmd.none
         | InitialListLoaded meetingRooms->
             let nextModel:Model = {
                 Page = Page.MeetingRoomList;
                 MeetingRooms = meetingRooms;
                 Users = [];
                 Reservations = [];
-                MeetingRoom = None;
                 Loading = false;
                 MeetingRoomId = None;
-                NewMeetingRoom = { Id = 0; Name = ""; Code = None };
+                MeetingRoom = { Id = 0; Name = ""; Code = None };
                  UserId = None;
                 ReservationId = None;
-                Reservation = None;
-                User = None;
-                NewUser = {
+                User = {
                     Id = 0;
                     Name = None;
                     Surname = None;
                     Email = "" };
-                NewReservation = {
+                Reservation = {
                     Id = 0;
                     MeetingRoomId = 0;
                     UserId = 0;
                     From = DateTime.Now;
                     To = DateTime.Now }}
             nextModel, Navigation.newUrl "#/meetingroomList"
-        | DeleteReservation(_) -> failwith "Not Implemented"
-        | DeleteUser(_) -> failwith "Not Implemented"
+        | DeleteReservation id ->
+            currentModel, (deleteReservation id)
+        | DeleteUser id ->
+            currentModel, (deleteUser id)
+        | UserNameUpdated userName ->
+            let updatedUser = { currentModel.User  with Name = Some userName }
+            { currentModel with User = updatedUser }, Cmd.none
+        | EmailUpdated email ->
+            let updatedUser = { currentModel.User  with Email = email }
+            { currentModel with User = updatedUser }, Cmd.none
+        | SurnameUpdated surname ->
+            let updatedUser = { currentModel.User  with Surname = Some surname }
+            { currentModel with User = updatedUser }, Cmd.none

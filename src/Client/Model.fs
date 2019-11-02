@@ -9,14 +9,11 @@ module Model =
 
             Users : User list
             UserId : string option
-            User:  User option
-            NewUser : User
+            User:  User
             Reservations : Reservation list
             ReservationId : string option
-            Reservation :  Reservation option
-            NewReservation : Reservation
+            Reservation :  Reservation
             Loading : bool
             MeetingRooms : MeetingRoom list
             MeetingRoomId : string option
-            MeetingRoom :  MeetingRoom option
-            NewMeetingRoom : MeetingRoom }
+            MeetingRoom :  MeetingRoom }
