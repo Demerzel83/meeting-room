@@ -28,7 +28,7 @@ module UserDb =
 
     let insert  (user:User) (connection:IDbConnection) =
         let dp = DynamicParameters()
-        dp.Add("Name", user.Name)
+        dp.Add("Name", Option.defaultValue null user.Name)
         dp.Add("Email", user.Email)
         dp.Add("Surname", Option.defaultValue null user.Surname)
 
@@ -43,7 +43,7 @@ module UserDb =
     let update (user:User) (connection:IDbConnection) =
         let dp = DynamicParameters()
         dp.Add("Id", user.Id)
-        dp.Add("Name", user.Name)
+        dp.Add("Name", Option.defaultValue null user.Name)
         dp.Add("Email", user.Email)
         dp.Add("Surname", Option.defaultValue null user.Surname)
 
