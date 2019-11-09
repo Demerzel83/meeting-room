@@ -14,7 +14,9 @@
         <Compile Include=".\Infrastructure\ReservationReader.fs" />
         <Compile Include=".\Infrastructure\UserDb.fs" />
         <Compile Include=".\Infrastructure\UserReader.fs" />
-        <Compile Include="Api.fs" />
+        <Compile Include=".\Api\MeetingRoom.fs" />
+        <Compile Include=".\Api\Reservation.fs" />
+        <Compile Include=".\Api\User.fs" />
         <Compile Include="Server.fs" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />
