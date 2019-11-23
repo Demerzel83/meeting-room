@@ -12,8 +12,8 @@ module List =
     let showRows (reservations:Reservation list) (dispatch : Msg -> unit) =
         List.map (fun (mr:Reservation) -> tr [ ]
                                              [ td [ ] [ a [ Href ("#/reservation/" + mr.Id.ToString()) ] [ str "Open"]  ]
-                                               td [ ] [ str (mr.From.ToString()) ]
-                                               td [ ] [ str (mr.To.ToString()) ]
+                                               td [ ] [ str (mr.From.ToString("dd-MM-yyyy HH:mm:ss")) ]
+                                               td [ ] [ str (mr.To.ToString("dd-MM-yyyy HH:mm:ss")) ]
                                                td [ ] [ str (mr.UserId.ToString()) ]
                                                td [ ] [ str (mr.MeetingRoomId.ToString())]
                                                td [ ] [ Button.button [ Button.Color IsDanger; Button.OnClick (fun _ -> dispatch (DeleteReservation mr.Id)) ]

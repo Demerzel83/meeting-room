@@ -6,5 +6,7 @@ group Client
     Fable.Elmish.HMR
     Thoth.Fetch
     Fulma
+    Fulma.Elmish
+    Fulma.Extensions.Wikiki.Calendar
     Fable.FontAwesome.Free
 

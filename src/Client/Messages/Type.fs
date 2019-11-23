@@ -1,6 +1,8 @@
 namespace UI.Messages
 
 open System
+open Fulma.Elmish
+
 open MeetingRoom.Shared
 
 module Type =
@@ -17,6 +19,8 @@ module Type =
       | DeleteMeetingRoom of int
       | NewMeetingRoom
       | LoadMeetingRooms
+      | FetchMeetingRooms
+      | MeetingRoomsFetched of MeetingRoom list
       | LoadReservations
       | ReservationsLoaded of Reservation list
       | DeleteReservation of int
@@ -27,8 +31,6 @@ module Type =
       | FetchUserSuccess of User
       | MeetingRoomUpdated of string
       | UserUpdated of string
-      | FromUpdated of string
-      | ToUpdated of string
       | SaveReservation
       | SaveNewReservation
       | UserNameUpdated of string
@@ -36,3 +38,5 @@ module Type =
       | SurnameUpdated of string
       | SaveUser
       | SaveNewUser
+      | FromUpdated of DatePicker.Types.State * (DateTime option)
+      | ToUpdated of DatePicker.Types.State * (DateTime option)

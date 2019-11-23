@@ -3,6 +3,7 @@ namespace UI.Messages
 open System
 open Elmish
 open Elmish.Navigation
+open Fulma.Elmish
 
 open  MeetingRoom.Shared
 open UI.Model
@@ -26,6 +27,9 @@ module Update =
 
     let loadMeetingRoom =
         Cmd.OfPromise.perform getAllMeetingRooms () InitialListLoaded
+
+    let fetchMeetingRooms =
+        Cmd.OfPromise.perform getAllMeetingRooms () MeetingRoomsFetched
 
     let loadReservations =
         Cmd.OfPromise.perform Reservation.getAll () ReservationsLoaded
@@ -62,6 +66,7 @@ module Update =
                 Users = [] ;
                 Reservations = [] ;
                 Loading = true ;
+                LoadingData = false;
                 MeetingRoomId = None ;
                 MeetingRoom = {
                     Id = 0 ;
@@ -79,7 +84,10 @@ module Update =
                     MeetingRoomId = 0;
                     UserId = 0;
                     From = DateTime.Now;
-                    To = DateTime.Now }}
+                    To = DateTime.Now }
+                DatePickerFromState = DatePicker.Types.defaultState;
+                DatePickerToState = DatePicker.Types.defaultState
+            }
 
         initialModel, loadMeetingRoom
 
@@ -107,6 +115,12 @@ module Update =
             currentModel, Navigation.newUrl "#/meetingroomNew"
         | LoadMeetingRooms ->
             init()
+        | FetchMeetingRooms ->
+            let nextModel = { currentModel with LoadingData = true }
+            nextModel, fetchMeetingRooms
+        | MeetingRoomsFetched meetingRooms ->
+            let nextModel = { currentModel with LoadingData = false; MeetingRooms = meetingRooms }
+            nextModel, Cmd.none
         | DeleteMeetingRoom id ->
             currentModel, (deleteMeetingRoomReload id)
         | SaveNewMeetingRoom ->
@@ -133,13 +147,13 @@ module Update =
             let updatedReservation = { currentModel.Reservation  with UserId = userId |> int }
             { currentModel with Reservation = updatedReservation }, Cmd.none
 
-        | FromUpdated from ->
-            let updatedReservation =  { currentModel.Reservation  with From = from |> DateTime.Parse; }
-            { currentModel with Reservation = updatedReservation }, Cmd.none
+        | FromUpdated (state, date) ->
+            let updatedReservation =  { currentModel.Reservation  with From = Option.defaultValue DateTime.Now date; }
+            { currentModel with Reservation = updatedReservation; DatePickerFromState = state }, Cmd.none
 
-        | ToUpdated toDate ->
-            let updatedReservation =  { currentModel.Reservation  with To = toDate |> DateTime.Parse; }
-            { currentModel with Reservation = updatedReservation }, Cmd.none
+        | ToUpdated (state, date) ->
+            let updatedReservation =  { currentModel.Reservation  with To = Option.defaultValue DateTime.Now date; }
+            { currentModel with Reservation = updatedReservation; DatePickerToState = state }, Cmd.none
         | SaveReservation ->
             currentModel, (updateReservation currentModel.Reservation)
         | SaveNewReservation ->
@@ -157,6 +171,7 @@ module Update =
                 Users = [];
                 Reservations = [];
                 Loading = false;
+                LoadingData = false;
                 MeetingRoomId = None;
                 MeetingRoom = { Id = 0; Name = ""; Code = None };
                  UserId = None;
@@ -171,7 +186,10 @@ module Update =
                     MeetingRoomId = 0;
                     UserId = 0;
                     From = DateTime.Now;
-                    To = DateTime.Now }}
+                    To = DateTime.Now };
+                    DatePickerFromState =  DatePicker.Types.defaultState;
+                    DatePickerToState = DatePicker.Types.defaultState
+            }
             nextModel, Navigation.newUrl "#/meetingroomList"
         | DeleteReservation id ->
             currentModel, (deleteReservation id)

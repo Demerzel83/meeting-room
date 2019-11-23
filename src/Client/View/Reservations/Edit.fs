@@ -2,12 +2,21 @@ namespace UI.Reservation
 
 open Fable.React
 open Fulma
+open Fulma.Elmish
 
+open MeetingRoom.Shared
 open UI.Model
 open UI.Messages.Type
+open Fable.FontAwesome
 
 module Edit =
     let editForm (model:Model)  (dispatch:Msg -> unit) =
+        let pickerFromConfig : DatePicker.Types.Config<Msg> =
+          DatePicker.Types.defaultConfig FromUpdated
+
+        let pickerToConfig : DatePicker.Types.Config<Msg> =
+          DatePicker.Types.defaultConfig ToUpdated
+
         let reservation = model.Reservation
         form [ ]
              [
@@ -15,9 +24,22 @@ module Edit =
                     [ Label.label [ ]
                         [ str "Meeting Room" ]
                       Control.div [ ]
-                        [ Input.text [
-                            Input.Value (reservation.MeetingRoomId.ToString())
-                            Input.OnChange (fun event -> dispatch (MeetingRoomUpdated event.Value) ) ] ] ]
+                        [ Dropdown.dropdown [ Dropdown.IsActive (model.Reservations.Length > 1) ]
+                            [ div [ ]
+                                [ Button.button [ Button.OnClick (fun _ -> dispatch FetchMeetingRooms) ]
+                                    [ span [ ]
+                                        [ str (model.Reservation.MeetingRoomId.ToString()) ]
+                                      Icon.icon [ Icon.Size IsSmall ]
+                                        [ Fa.i [ Fa.Solid.AngleDown ]
+                                            [ ] ] ] ]
+                              Dropdown.menu [ ]
+                                [ Dropdown.content [  ]
+                                    (List.map (fun (mr:MeetingRoom) ->  Dropdown.Item.a [ Dropdown.Item.IsActive (mr.Id = model.Reservation.MeetingRoomId);  ] [ Button.button [ Button.OnClick (fun _ -> dispatch (MeetingRoomUpdated ( mr.Id.ToString()) ))] [ str mr.Name] ]) model.MeetingRooms)
+                                ]
+                            ]
+                        ]
+
+                    ]
                Field.div [ ]
                     [ Label.label [ ]
                         [ str "User" ]
@@ -29,16 +51,14 @@ module Edit =
                     [ Label.label [ ]
                         [ str "From" ]
                       Control.div [ ]
-                        [ Input.text [
-                            Input.Value ( reservation.From.ToString());
-                            Input.OnChange (fun event -> dispatch (FromUpdated event.Value)) ] ] ]
+                        [ DatePicker.View.root pickerFromConfig model.DatePickerFromState (Some reservation.From) dispatch
+                        ] ]
                Field.div [ ]
                     [ Label.label [ ]
                         [ str "To" ]
                       Control.div [ ]
-                        [ Input.text [
-                            Input.Value ( reservation.To.ToString());
-                            Input.OnChange (fun event -> dispatch (ToUpdated event.Value)) ] ] ]
+                        [ DatePicker.View.root pickerToConfig model.DatePickerToState (Some reservation.To) dispatch
+                        ] ]
                Field.div [ Field.IsGrouped ]
                 [ Control.div [ ]
                     [ Button.button [ Button.Color IsPrimary; Button.OnClick (fun _ -> dispatch SaveReservation) ]

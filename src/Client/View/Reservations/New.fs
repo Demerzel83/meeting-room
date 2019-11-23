@@ -2,12 +2,19 @@ namespace UI.Reservation
 
 open Fable.React
 open Fulma
+open Fulma.Elmish
 
 open UI.Model
 open UI.Messages.Type
 
 module New =
     let newForm (model:Model)  (dispatch:Msg -> unit) =
+        let pickerFromConfig : DatePicker.Types.Config<Msg> =
+          DatePicker.Types.defaultConfig FromUpdated
+
+        let pickerToConfig : DatePicker.Types.Config<Msg> =
+          DatePicker.Types.defaultConfig ToUpdated
+
         form [ ]
                  [
                    Field.div [ ]
@@ -28,16 +35,14 @@ module New =
                         [ Label.label [ ]
                             [ str "From" ]
                           Control.div [ ]
-                            [ Input.text [
-                                Input.Value ( model.Reservation.From.ToString());
-                                Input.OnChange (fun event -> dispatch (FromUpdated event.Value)) ] ] ]
+                            [ DatePicker.View.root pickerFromConfig model.DatePickerFromState (Some model.Reservation.From) dispatch
+                            ] ]
                    Field.div [ ]
                         [ Label.label [ ]
                             [ str "To" ]
                           Control.div [ ]
-                            [ Input.text [
-                                Input.Value ( model.Reservation.To.ToString());
-                                Input.OnChange (fun event -> dispatch (ToUpdated event.Value)) ] ] ]
+                            [ DatePicker.View.root pickerToConfig model.DatePickerToState (Some model.Reservation.To) dispatch
+                            ] ]
                    Field.div [ Field.IsGrouped ]
                     [ Control.div [ ]
                         [ Button.button [ Button.Color IsPrimary; Button.OnClick (fun _ -> dispatch SaveNewReservation) ]

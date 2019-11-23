@@ -27,6 +27,8 @@ group Client
     nuget Thoth.Fetch ~> 1
     nuget Fable.React ~> 5
     nuget Fulma ~> 2
+    nuget Fulma.Elmish
+    nuget Fulma.Extensions.Wikiki.Calendar
     nuget Fable.FontAwesome.Free ~> 2
 
 group Build

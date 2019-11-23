@@ -1,5 +1,7 @@
 namespace UI
 
+open Fulma.Elmish
+
 open  MeetingRoom.Shared
 open UI.Parser.Type
 
@@ -14,6 +16,9 @@ module Model =
             ReservationId : string option
             Reservation :  Reservation
             Loading : bool
+            LoadingData : bool
             MeetingRooms : MeetingRoom list
             MeetingRoomId : string option
-            MeetingRoom :  MeetingRoom }
+            MeetingRoom :  MeetingRoom
+            DatePickerFromState : DatePicker.Types.State
+            DatePickerToState : DatePicker.Types.State }
