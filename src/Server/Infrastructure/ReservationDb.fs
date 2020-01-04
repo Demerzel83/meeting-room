@@ -49,7 +49,7 @@ module ReservationDb =
             dp.Add("Id", id)
 
             let mr =
-                dapperParametrizedQuery<ReservationDto> connection (ReservationSql + "WHERE Id = @Id") dp
+                dapperParametrizedQuery<ReservationDto> connection (ReservationSql + " WHERE Id = @Id") dp
 
                 |> List.ofSeq
                 |> List.map mapReservation
