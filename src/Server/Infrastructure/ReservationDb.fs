@@ -5,13 +5,41 @@ open Dapper
 open MeetingRoom.Utils.Dapper
 open MeetingRoom.Shared
 open System.Data
+open System
+open Newtonsoft.Json
+open MeetingRoom.Utils.Json
 
 module ReservationDb =
 
-    let getAll (connection:IDbConnection) =
-            dapperQuery<Reservation> connection "SELECT Id, MeetingRoomId, UserId, [From], [to] FROM dbo.Reservations"
-            |> List.ofSeq
+    type ReservationDto =
+      { Id : int
+        From : DateTime
+        To : DateTime
+        MeetingRoom : string
+        User : string }
 
+    type MapFn = ReservationDto -> Reservation
+    let mapReservation: MapFn =
+        fun r ->
+            {
+                Id = r.Id
+                From = r.From
+                To = r.To
+                MeetingRoom = JsonConvert.DeserializeObject<MeetingRoom>(r.MeetingRoom, new OptionConverter() )
+                User = JsonConvert.DeserializeObject<User>(r.User, new OptionConverter())
+            }
+
+    let getAll (connection:IDbConnection) =
+            dapperQuery<ReservationDto> connection "
+                SELECT
+                    Id,
+                    [From],
+                    [to],
+                    (Select Id, Name, Code From dbo.MeetingRooms where id = MeetingRoomId for Json auto, Without_Array_Wrapper) as 'MeetingRoom',
+                    (Select Id, Email, Name, Surname From dbo.Users where id = UserId for Json auto, Without_Array_Wrapper) as 'User'
+                FROM dbo.Reservations"
+            |> List.ofSeq
+            |> List.map mapReservation
 
     let get (id:int) (connection:IDbConnection)  =
             let dp = DynamicParameters()
@@ -28,8 +56,8 @@ module ReservationDb =
 
     let insert  (reservation:Reservation) (connection:IDbConnection) =
         let dp = DynamicParameters()
-        dp.Add("MeetingRoomId", reservation.MeetingRoomId)
-        dp.Add("UserId", reservation.UserId)
+        dp.Add("MeetingRoomId", reservation.MeetingRoom.Id)
+        dp.Add("UserId", reservation.User.Id)
         dp.Add("From", reservation.From)
         dp.Add("To", reservation.To)
 
@@ -44,8 +72,8 @@ module ReservationDb =
 
     let update (reservation:Reservation) (connection:IDbConnection) =
         let dp = DynamicParameters()
-        dp.Add("MeetingRoomId", reservation.MeetingRoomId)
-        dp.Add("UserId", reservation.UserId)
+        dp.Add("MeetingRoomId", reservation.MeetingRoom.Id)
+        dp.Add("UserId", reservation.User.Id)
         dp.Add("From", reservation.From)
         dp.Add("To", reservation.To)
         dp.Add("Id", reservation.Id)

@@ -8,6 +8,7 @@
         <None Include="paket.references" />
         <Compile Include="..\Shared\Shared.fs" />
         <Compile Include=".\Utils\Dapper.fs" />
+        <Compile Include=".\Utils\OptionConverter.fs" />
         <Compile Include=".\Infrastructure\MeetingRoomDb.fs" />
         <Compile Include=".\Infrastructure\MeetingRoomReader.fs" />
         <Compile Include=".\Infrastructure\ReservationDb.fs" />

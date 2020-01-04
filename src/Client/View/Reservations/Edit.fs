@@ -28,13 +28,13 @@ module Edit =
                             [ div [ ]
                                 [ Button.button [ Button.OnClick (fun _ -> dispatch FetchMeetingRooms) ]
                                     [ span [ ]
-                                        [ str (model.Reservation.MeetingRoomId.ToString()) ]
+                                        [ str (model.Reservation.MeetingRoom.Id.ToString()) ]
                                       Icon.icon [ Icon.Size IsSmall ]
                                         [ Fa.i [ Fa.Solid.AngleDown ]
                                             [ ] ] ] ]
                               Dropdown.menu [ ]
                                 [ Dropdown.content [  ]
-                                    (List.map (fun (mr:MeetingRoom) ->  Dropdown.Item.a [ Dropdown.Item.IsActive (mr.Id = model.Reservation.MeetingRoomId);  ] [ Button.button [ Button.OnClick (fun _ -> dispatch (MeetingRoomUpdated ( mr.Id.ToString()) ))] [ str mr.Name] ]) model.MeetingRooms)
+                                    (List.map (fun (mr:MeetingRoom) ->  Dropdown.Item.a [ Dropdown.Item.IsActive (mr.Id = model.Reservation.MeetingRoom.Id);  ] [ Button.button [ Button.OnClick (fun _ -> dispatch (MeetingRoomUpdated ( mr.Id.ToString()) ))] [ str mr.Name] ]) model.MeetingRooms)
                                 ]
                             ]
                         ]
@@ -45,7 +45,7 @@ module Edit =
                         [ str "User" ]
                       Control.div [ ]
                         [ Input.text [
-                            Input.Value ( reservation.UserId.ToString());
+                            Input.Value ( reservation.User.Id.ToString());
                             Input.OnChange (fun event -> dispatch (UserUpdated event.Value)) ] ] ]
                Field.div [ ]
                     [ Label.label [ ]

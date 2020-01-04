@@ -14,8 +14,8 @@ module List =
                                              [ td [ ] [ a [ Href ("#/reservation/" + mr.Id.ToString()) ] [ str "Open"]  ]
                                                td [ ] [ str (mr.From.ToString("dd-MM-yyyy HH:mm:ss")) ]
                                                td [ ] [ str (mr.To.ToString("dd-MM-yyyy HH:mm:ss")) ]
-                                               td [ ] [ str (mr.UserId.ToString()) ]
-                                               td [ ] [ str (mr.MeetingRoomId.ToString())]
+                                               td [ ] [ str (mr.User.Email) ]
+                                               td [ ] [ str (mr.MeetingRoom.Name)]
                                                td [ ] [ Button.button [ Button.Color IsDanger; Button.OnClick (fun _ -> dispatch (DeleteReservation mr.Id)) ]
                                                             [ str "Delete" ] ] ]) reservations
 

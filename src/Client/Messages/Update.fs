@@ -81,8 +81,17 @@ module Update =
                     Email = "" };
                 Reservation = {
                     Id = 0;
-                    MeetingRoomId = 0;
-                    UserId = 0;
+                    MeetingRoom = {
+                        Id = 0;
+                        Name = "";
+                        Code = None;
+                        };
+                    User = {
+                        Id = 0;
+                        Email = "";
+                        Name = None;
+                        Surname = None
+                    };
                     From = DateTime.Now;
                     To = DateTime.Now }
                 DatePickerFromState = DatePicker.Types.defaultState;
@@ -140,11 +149,15 @@ module Update =
 
             { currentModel with MeetingRoom = newMeetingRoom }, Cmd.none
         | MeetingRoomUpdated meetingRoomId ->
+            let updatedMeetingRoom =
+                { currentModel.Reservation.MeetingRoom with Id = meetingRoomId |> int}
             let updatedReservation =
-                { currentModel.Reservation  with MeetingRoomId = meetingRoomId |> int }
+                { currentModel.Reservation  with MeetingRoom = updatedMeetingRoom }
             { currentModel with Reservation =  updatedReservation }, Cmd.none
         | UserUpdated userId ->
-            let updatedReservation = { currentModel.Reservation  with UserId = userId |> int }
+            let updatedUser =
+                { currentModel.User with Id = userId |> int }
+            let updatedReservation = { currentModel.Reservation  with User = updatedUser }
             { currentModel with Reservation = updatedReservation }, Cmd.none
 
         | FromUpdated (state, date) ->
@@ -183,8 +196,17 @@ module Update =
                     Email = "" };
                 Reservation = {
                     Id = 0;
-                    MeetingRoomId = 0;
-                    UserId = 0;
+                    MeetingRoom = {
+                        Id = 0;
+                        Name = "";
+                        Code = None
+                    }
+                    User = {
+                        Id = 0;
+                        Email = "";
+                        Name = None;
+                        Surname = None;
+                    }
                     From = DateTime.Now;
                     To = DateTime.Now };
                     DatePickerFromState =  DatePicker.Types.defaultState;

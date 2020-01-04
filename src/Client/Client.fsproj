@@ -12,6 +12,7 @@
         <Compile Include="Version.fs" />
         <Compile Include="Parser\Type.fs" />
         <Compile Include="Model.fs" />
+        <Compile Include="Api\Encoding.fs" />
         <Compile Include="Api\MeetingRoom.fs" />
         <Compile Include="Api\User.fs" />
         <Compile Include="Api\Reservation.fs" />

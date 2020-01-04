@@ -14,7 +14,7 @@ type User =
 
 type Reservation =
       { Id : int
-        MeetingRoomId : int
-        UserId : int
         From : DateTime
-        To : DateTime }
+        To : DateTime
+        MeetingRoom : MeetingRoom
+        User : User }
