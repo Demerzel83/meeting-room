@@ -29,8 +29,7 @@ module ReservationDb =
                 User = JsonConvert.DeserializeObject<User>(r.User, new OptionConverter())
             }
 
-    let getAll (connection:IDbConnection) =
-            dapperQuery<ReservationDto> connection "
+    let ReservationSql = "
                 SELECT
                     Id,
                     [From],
@@ -38,6 +37,10 @@ module ReservationDb =
                     (Select Id, Name, Code From dbo.MeetingRooms where id = MeetingRoomId for Json auto, Without_Array_Wrapper) as 'MeetingRoom',
                     (Select Id, Email, Name, Surname From dbo.Users where id = UserId for Json auto, Without_Array_Wrapper) as 'User'
                 FROM dbo.Reservations"
+
+
+    let getAll (connection:IDbConnection) =
+            dapperQuery<ReservationDto> connection ReservationSql
             |> List.ofSeq
             |> List.map mapReservation
 
@@ -46,8 +49,10 @@ module ReservationDb =
             dp.Add("Id", id)
 
             let mr =
-                dapperParametrizedQuery<Reservation> connection "SELECT Id, MeetingRoomId, UserId, [From], [to] FROM dbo.Reservations WHERE Id = @Id" dp
+                dapperParametrizedQuery<ReservationDto> connection (ReservationSql + "WHERE Id = @Id") dp
+
                 |> List.ofSeq
+                |> List.map mapReservation
 
             match mr with
             | [mro] -> Some mro
