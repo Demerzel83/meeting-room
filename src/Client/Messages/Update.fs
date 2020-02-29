@@ -68,6 +68,8 @@ module Update =
                 Loading = true ;
                 LoadingData = false;
                 MeetingRoomId = None ;
+                ShowListMeetingRooms = false;
+                ShowListUsers = false;
                 MeetingRoom = {
                     Id = 0 ;
                     Name = "" ;
@@ -130,6 +132,9 @@ module Update =
         | MeetingRoomsFetched meetingRooms ->
             let nextModel = { currentModel with LoadingData = false; MeetingRooms = meetingRooms }
             nextModel, Cmd.none
+        | MeetingRoomClicked ->
+            let nextModel = { currentModel with ShowListMeetingRooms = true }
+            nextModel, Cmd.none
         | DeleteMeetingRoom id ->
             currentModel, (deleteMeetingRoomReload id)
         | SaveNewMeetingRoom ->
@@ -148,16 +153,12 @@ module Update =
             let newMeetingRoom =  { currentModel.MeetingRoom  with Code = Some code }
 
             { currentModel with MeetingRoom = newMeetingRoom }, Cmd.none
-        | MeetingRoomUpdated meetingRoomId ->
-            let updatedMeetingRoom =
-                { currentModel.Reservation.MeetingRoom with Id = meetingRoomId |> int}
+        | MeetingRoomUpdated meetingRoom ->
             let updatedReservation =
-                { currentModel.Reservation  with MeetingRoom = updatedMeetingRoom }
-            { currentModel with Reservation =  updatedReservation }, Cmd.none
-        | UserUpdated userId ->
-            let updatedUser =
-                { currentModel.User with Id = userId |> int }
-            let updatedReservation = { currentModel.Reservation  with User = updatedUser }
+                { currentModel.Reservation  with MeetingRoom = meetingRoom }
+            { currentModel with Reservation =  updatedReservation; ShowListMeetingRooms = false }, Cmd.none
+        | UserUpdated user ->
+            let updatedReservation = { currentModel.Reservation  with User = user }
             { currentModel with Reservation = updatedReservation }, Cmd.none
 
         | FromUpdated (state, date) ->
@@ -187,7 +188,9 @@ module Update =
                 LoadingData = false;
                 MeetingRoomId = None;
                 MeetingRoom = { Id = 0; Name = ""; Code = None };
-                 UserId = None;
+                ShowListMeetingRooms= false;
+                ShowListUsers= false;
+                UserId = None;
                 ReservationId = None;
                 User = {
                     Id = 0;

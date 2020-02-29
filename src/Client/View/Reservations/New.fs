@@ -23,14 +23,14 @@ module New =
                           Control.div [ ]
                             [ Input.text [
                                 Input.Value (model.Reservation.MeetingRoom.Name.ToString())
-                                Input.OnChange (fun event -> dispatch (MeetingRoomUpdated event.Value) ) ] ] ]
+                                Input.OnChange (fun event -> dispatch (MeetingRoomUpdated model.Reservation.MeetingRoom) ) ] ] ]
                    Field.div [ ]
                         [ Label.label [ ]
                             [ str "User" ]
                           Control.div [ ]
                             [ Input.text [
                                 Input.Value ( model.Reservation.User.Email.ToString());
-                                Input.OnChange (fun event -> dispatch (UserUpdated event.Value)) ] ] ]
+                                Input.OnChange (fun event -> dispatch (UserUpdated ({ model.User with Name = Some event.Value}))) ] ] ]
                    Field.div [ ]
                         [ Label.label [ ]
                             [ str "From" ]

@@ -14,6 +14,7 @@ module Type =
       | FetchMeetingRoomSuccess of MeetingRoom
       | MeetingRoomNameUpdated of string
       | MeetingRoomCodeUpdated of string
+      | MeetingRoomClicked
       | SaveMeetingRoom
       | SaveNewMeetingRoom
       | DeleteMeetingRoom of int
@@ -29,8 +30,10 @@ module Type =
       | UsersLoaded of User list
       | DeleteUser of int
       | FetchUserSuccess of User
-      | MeetingRoomUpdated of string
-      | UserUpdated of string
+      | MeetingRoomUpdated of MeetingRoom
+      | UserUpdated of User
+      | ShowListUsers
+      | UsersClicked
       | SaveReservation
       | SaveNewReservation
       | UserNameUpdated of string
