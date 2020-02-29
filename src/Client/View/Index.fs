@@ -7,7 +7,6 @@ open Fulma
 open UI.Model
 open UI.Messages.Type
 open UI
-open Fable.Core.JS
 open UI.Parser.Type
 
 module View =
@@ -36,10 +35,9 @@ module View =
 
 
     let showContent (model:Model) (dispatch : Msg -> unit) =
-        if model.Loading then
+        if model.LoadingPage then
             div [] [str "Loading...."]
         else
-              console.log ("Page", model.Page)
               match model.Page with
               | Page.MeetingRoomList -> MeetingRoom.List.showList model.MeetingRooms dispatch
               | Page.ReservationList -> Reservation.List.showList model.Reservations dispatch

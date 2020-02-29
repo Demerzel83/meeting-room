@@ -2,13 +2,13 @@ namespace UI.Parser
 
 open Elmish
 open Elmish.UrlParser
+open Elmish.Navigation
 
 open UI.Model
 open UI.Messages.Type
 open UI.Parser.Type
 open UI.Api.MeetingRoom
 open UI.Api
-open Browser.Dom
 
 module Functions =
     /// The URL is turned into a Page option.
@@ -32,15 +32,14 @@ module Functions =
     let urlUpdate (result:Page option) model =
       match result with
       | Some (Page.UserList) ->
-        model, Cmd.OfPromise.either User.getAll () UsersLoaded (fun ex -> FetchFailure ("error", ex))
+        {model with Page = Page.UserList}, Cmd.OfPromise.either User.getAll () UsersLoaded (fun ex -> FetchFailure ("error", ex))
       | Some (Page.ReservationList) ->
-        { model with Loading = true}, Cmd.OfPromise.either Reservation.getAll () ReservationsLoaded (fun ex -> FetchFailure ("error", ex))
+        { model with Page = Page.ReservationList; LoadingPage = true}, Cmd.OfPromise.either Reservation.getAll () ReservationsLoaded (fun ex -> FetchFailure ("error", ex))
       | Some (Page.MeetingRoom id) ->
-          { model with Page = (Page.MeetingRoom id) }, Cmd.OfPromise.either getMeetingRoom (id.ToString()) FetchMeetingRoomSuccess (fun ex -> FetchFailure (id,ex))
+        { model with Page = (Page.MeetingRoom id) }, Cmd.OfPromise.either getMeetingRoom (id.ToString()) FetchMeetingRoomSuccess (fun ex -> FetchFailure (id,ex))
       | Some (Page.User id) ->
-          { model with Page = (Page.User id) }, Cmd.OfPromise.either User.get (id.ToString()) FetchUserSuccess (fun ex -> FetchFailure (id,ex))
+        { model with Page = (Page.User id) }, Cmd.OfPromise.either User.get (id.ToString()) FetchUserSuccess (fun ex -> FetchFailure (id,ex))
       | Some (Page.Reservation id) ->
-          { model with Page = (Page.Reservation id) }, Cmd.OfPromise.either Reservation.get (id.ToString()) FetchReservationSuccess (fun ex -> FetchFailure (id,ex))
-
+        { model with Page = (Page.Reservation id) }, Cmd.OfPromise.either Reservation.get (id.ToString()) FetchReservationSuccess (fun ex -> FetchFailure (id,ex))
       | Some page -> { model with Page = page }, Cmd.none
       | None -> { model with Page = Page.MeetingRoomList }, Cmd.none

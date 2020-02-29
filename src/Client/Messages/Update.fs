@@ -61,11 +61,11 @@ module Update =
         initialModel, loadMeetingRooms
 
     let loadAllReservations model =
-        let modelLoading = { model  with Loading = true; ShowListMeetingRooms = false; ShowListUsers = false }
+        let modelLoading = { model  with LoadingPage = true; ShowListMeetingRooms = false; ShowListUsers = false }
         modelLoading, loadReservations
 
     let loadAllUsers model =
-        let modelLoading = { model  with Loading = true }
+        let modelLoading = { model  with LoadingPage = true }
         modelLoading, loadUsers
 
     let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
@@ -74,8 +74,8 @@ module Update =
         | LoadReservations ->
             loadAllReservations currentModel
         | ReservationsLoaded reservations ->
-            let modelWithReservations = { currentModel with Reservations = reservations; Loading = false; Page = Page.ReservationList }
-            modelWithReservations, Navigation.newUrl "#/reservationList"
+            let modelWithReservations = { currentModel with Reservations = reservations; LoadingPage = false; Page = Page.ReservationList }
+            modelWithReservations, Cmd.none
         | UserUpdated user ->
             let updatedReservation = { currentModel.Reservation  with User = user }
             { currentModel with Reservation = updatedReservation; ShowListUsers = false }, Cmd.none
@@ -93,21 +93,24 @@ module Update =
             { currentModel with Reservation = reservation }, Cmd.none
         | DeleteReservation id ->
             currentModel, (deleteReservation id)
-        | UsersClicked ->
-            let nextModel = { currentModel with ShowListUsers = true }
-            nextModel, Cmd.none
         | MeetingRoomUpdated meetingRoom ->
             let updatedReservation =
                 { currentModel.Reservation  with MeetingRoom = meetingRoom }
             { currentModel with Reservation =  updatedReservation; ShowListMeetingRooms = false }, Cmd.none
+        | UsersClicked ->
+            if currentModel.Users.Length = 0 then
+                { currentModel with ShowListUsers = false }, loadUsers
+            else
+                { currentModel with ShowListUsers = true }, Cmd.none
         // Users
         | LoadUsers ->
             loadAllUsers currentModel
         | UsersLoaded users ->
-            let modelWithUsers = { currentModel with Users = users; Loading = false; Page = Page.UserList }
-            modelWithUsers, Navigation.newUrl "#/userList"
+            let modelWithUsers = { currentModel with Users = users; LoadingPage = false }
+            modelWithUsers, Cmd.none
         | SaveUser ->
-            currentModel, (updateUser currentModel.User)
+            let newModel = { currentModel with Page = Page.UserList; LoadingPage = true}
+            newModel,  seq { updateUser currentModel.User; Navigation.newUrl "#/userList" } |> Cmd.batch
         | SaveNewUser ->
             currentModel, (createUser currentModel.User)
         | DeleteUser id ->
@@ -127,7 +130,7 @@ module Update =
         | NewMeetingRoom ->
             currentModel, Navigation.newUrl "#/meetingroomNew"
         | LoadMeetingRooms ->
-            { currentModel with Loading = true}, loadMeetingRooms
+            { currentModel with LoadingPage = true}, loadMeetingRooms
         | FetchMeetingRooms ->
             let nextModel = { currentModel with LoadingData = true }
             nextModel, fetchMeetingRooms
@@ -150,10 +153,10 @@ module Update =
             let newMeetingRoom =  { currentModel.MeetingRoom  with Code = Some code }
             { currentModel with MeetingRoom = newMeetingRoom }, Cmd.none
 
-        | FetchMeetingRoomSuccess mr -> { currentModel with MeetingRoom = mr; Loading = false }, Cmd.none
+        | FetchMeetingRoomSuccess mr -> { currentModel with MeetingRoom = mr; LoadingPage = false }, Cmd.none
         // common
-        | FetchFailure _ -> { currentModel with Loading = false }, Cmd.none
+        | FetchFailure _ -> { currentModel with LoadingPage = false }, Cmd.none
         | InitialListLoaded meetingRooms->
-            let nextModel = { getDefaultStatus() with MeetingRooms = meetingRooms; Loading = false }
+            let nextModel = { getDefaultStatus() with MeetingRooms = meetingRooms; LoadingPage = false }
             nextModel, Navigation.newUrl "#/meetingroomList"
 

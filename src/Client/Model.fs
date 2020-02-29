@@ -20,7 +20,7 @@ module Model =
             Reservation :  Reservation
             ShowListMeetingRooms : bool
 
-            Loading : bool
+            LoadingPage : bool
             LoadingData : bool
 
             MeetingRooms : MeetingRoom list
@@ -35,7 +35,7 @@ module Model =
             MeetingRooms = [] ;
             Users = [] ;
             Reservations = [] ;
-            Loading = true ;
+            LoadingPage = true ;
             LoadingData = false;
             MeetingRoomId = None ;
             ShowListMeetingRooms = false;

@@ -1,0 +1,7 @@
+- Fix styles for date picker
+- Refactor update file (split in multiple?)
+- Ideas for reservation edit/new:
+    - after selecting from and to show the list of meetings rooms available
+    - after selecitng from, to and user check if it's available
+- Review ui navigation logic in the front-end
+- Review api calls
