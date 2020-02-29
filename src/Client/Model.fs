@@ -1,5 +1,6 @@
 namespace UI
 
+open System
 open Fulma.Elmish
 
 open  MeetingRoom.Shared
@@ -28,3 +29,43 @@ module Model =
 
             DatePickerFromState : DatePicker.Types.State
             DatePickerToState : DatePicker.Types.State }
+
+    let getDefaultStatus ():Model =
+        {   Page = Page.MeetingRoomList ;
+            MeetingRooms = [] ;
+            Users = [] ;
+            Reservations = [] ;
+            Loading = true ;
+            LoadingData = false;
+            MeetingRoomId = None ;
+            ShowListMeetingRooms = false;
+            ShowListUsers = false;
+            MeetingRoom = {
+                Id = 0 ;
+                Name = "" ;
+                Code = None };
+            UserId = None;
+            ReservationId = None;
+            User = {
+                Id = 0;
+                Name = None;
+                Surname = None;
+                Email = "" };
+            Reservation = {
+                Id = 0;
+                MeetingRoom = {
+                    Id = 0;
+                    Name = "";
+                    Code = None;
+                    };
+                User = {
+                    Id = 0;
+                    Email = "";
+                    Name = None;
+                    Surname = None
+                };
+                From = DateTime.Now;
+                To = DateTime.Now }
+            DatePickerFromState = DatePicker.Types.defaultState;
+            DatePickerToState = DatePicker.Types.defaultState
+        }

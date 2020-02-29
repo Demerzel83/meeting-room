@@ -3,9 +3,8 @@ namespace UI.Messages
 open System
 open Elmish
 open Elmish.Navigation
-open Fulma.Elmish
 
-open  MeetingRoom.Shared
+open MeetingRoom.Shared
 open UI.Model
 open UI.Api.MeetingRoom
 open UI.Api
@@ -24,8 +23,7 @@ module Update =
     let updatemr meetingRoom =
         Cmd.OfPromise.perform updateMeetingRoom meetingRoom (always LoadMeetingRooms)
 
-
-    let loadMeetingRoom =
+    let loadMeetingRooms =
         Cmd.OfPromise.perform getAllMeetingRooms () InitialListLoaded
 
     let fetchMeetingRooms =
@@ -58,52 +56,12 @@ module Update =
     let updateMeeting meetingRoom =
         updatemr meetingRoom
 
-
     let init _ : Model * Cmd<Msg> =
-        let initialModel:Model =
-            {   Page = Page.MeetingRoomList ;
-                MeetingRooms = [] ;
-                Users = [] ;
-                Reservations = [] ;
-                Loading = true ;
-                LoadingData = false;
-                MeetingRoomId = None ;
-                ShowListMeetingRooms = false;
-                ShowListUsers = false;
-                MeetingRoom = {
-                    Id = 0 ;
-                    Name = "" ;
-                    Code = None };
-                UserId = None;
-                ReservationId = None;
-                User = {
-                    Id = 0;
-                    Name = None;
-                    Surname = None;
-                    Email = "" };
-                Reservation = {
-                    Id = 0;
-                    MeetingRoom = {
-                        Id = 0;
-                        Name = "";
-                        Code = None;
-                        };
-                    User = {
-                        Id = 0;
-                        Email = "";
-                        Name = None;
-                        Surname = None
-                    };
-                    From = DateTime.Now;
-                    To = DateTime.Now }
-                DatePickerFromState = DatePicker.Types.defaultState;
-                DatePickerToState = DatePicker.Types.defaultState
-            }
-
-        initialModel, loadMeetingRoom
+        let initialModel = getDefaultStatus()
+        initialModel, loadMeetingRooms
 
     let loadAllReservations model =
-        let modelLoading = { model  with Loading = true }
+        let modelLoading = { model  with Loading = true; ShowListMeetingRooms = false; ShowListUsers = false }
         modelLoading, loadReservations
 
     let loadAllUsers model =
@@ -112,20 +70,64 @@ module Update =
 
     let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
         match msg with
+        // Reservations
         | LoadReservations ->
             loadAllReservations currentModel
         | ReservationsLoaded reservations ->
             let modelWithReservations = { currentModel with Reservations = reservations; Loading = false; Page = Page.ReservationList }
-            modelWithReservations, Cmd.none
+            modelWithReservations, Navigation.newUrl "#/reservationList"
+        | UserUpdated user ->
+            let updatedReservation = { currentModel.Reservation  with User = user }
+            { currentModel with Reservation = updatedReservation; ShowListUsers = false }, Cmd.none
+        | FromUpdated (state, date) ->
+            let updatedReservation =  { currentModel.Reservation  with From = Option.defaultValue DateTime.Now date; }
+            { currentModel with Reservation = updatedReservation; DatePickerFromState = state }, Cmd.none
+        | ToUpdated (state, date) ->
+            let updatedReservation =  { currentModel.Reservation  with To = Option.defaultValue DateTime.Now date; }
+            { currentModel with Reservation = updatedReservation; DatePickerToState = state }, Cmd.none
+        | SaveReservation ->
+            currentModel, (updateReservation currentModel.Reservation)
+        | SaveNewReservation ->
+            currentModel, (createReservation currentModel.Reservation)
+        | FetchReservationSuccess reservation ->
+            { currentModel with Reservation = reservation }, Cmd.none
+        | DeleteReservation id ->
+            currentModel, (deleteReservation id)
+        | UsersClicked ->
+            let nextModel = { currentModel with ShowListUsers = true }
+            nextModel, Cmd.none
+        | MeetingRoomUpdated meetingRoom ->
+            let updatedReservation =
+                { currentModel.Reservation  with MeetingRoom = meetingRoom }
+            { currentModel with Reservation =  updatedReservation; ShowListMeetingRooms = false }, Cmd.none
+        // Users
         | LoadUsers ->
             loadAllUsers currentModel
         | UsersLoaded users ->
             let modelWithUsers = { currentModel with Users = users; Loading = false; Page = Page.UserList }
-            modelWithUsers, Cmd.none
+            modelWithUsers, Navigation.newUrl "#/userList"
+        | SaveUser ->
+            currentModel, (updateUser currentModel.User)
+        | SaveNewUser ->
+            currentModel, (createUser currentModel.User)
+        | DeleteUser id ->
+            currentModel, (deleteUser id)
+        | UserNameUpdated userName ->
+            let updatedUser = { currentModel.User  with Name = Some userName }
+            { currentModel with User = updatedUser }, Cmd.none
+        | EmailUpdated email ->
+            let updatedUser = { currentModel.User  with Email = email }
+            { currentModel with User = updatedUser }, Cmd.none
+        | SurnameUpdated surname ->
+            let updatedUser = { currentModel.User  with Surname = Some surname }
+            { currentModel with User = updatedUser }, Cmd.none
+        | FetchUserSuccess user ->
+            { currentModel with User = user }, Cmd.none
+        // Meeting Room
         | NewMeetingRoom ->
             currentModel, Navigation.newUrl "#/meetingroomNew"
         | LoadMeetingRooms ->
-            init()
+            { currentModel with Loading = true}, loadMeetingRooms
         | FetchMeetingRooms ->
             let nextModel = { currentModel with LoadingData = true }
             nextModel, fetchMeetingRooms
@@ -141,91 +143,17 @@ module Update =
             currentModel, (createMeeting currentModel.MeetingRoom)
         | SaveMeetingRoom ->
             currentModel, (updateMeeting currentModel.MeetingRoom )
-        | SaveUser ->
-            currentModel, (updateUser currentModel.User)
-        | SaveNewUser ->
-            currentModel, (createUser currentModel.User)
         | MeetingRoomNameUpdated name ->
             let newMeetingRoom = { currentModel.MeetingRoom  with Name = name }
-
             { currentModel with MeetingRoom = newMeetingRoom }, Cmd.none
         | MeetingRoomCodeUpdated code ->
             let newMeetingRoom =  { currentModel.MeetingRoom  with Code = Some code }
-
             { currentModel with MeetingRoom = newMeetingRoom }, Cmd.none
-        | MeetingRoomUpdated meetingRoom ->
-            let updatedReservation =
-                { currentModel.Reservation  with MeetingRoom = meetingRoom }
-            { currentModel with Reservation =  updatedReservation; ShowListMeetingRooms = false }, Cmd.none
-        | UserUpdated user ->
-            let updatedReservation = { currentModel.Reservation  with User = user }
-            { currentModel with Reservation = updatedReservation }, Cmd.none
 
-        | FromUpdated (state, date) ->
-            let updatedReservation =  { currentModel.Reservation  with From = Option.defaultValue DateTime.Now date; }
-            { currentModel with Reservation = updatedReservation; DatePickerFromState = state }, Cmd.none
-
-        | ToUpdated (state, date) ->
-            let updatedReservation =  { currentModel.Reservation  with To = Option.defaultValue DateTime.Now date; }
-            { currentModel with Reservation = updatedReservation; DatePickerToState = state }, Cmd.none
-        | SaveReservation ->
-            currentModel, (updateReservation currentModel.Reservation)
-        | SaveNewReservation ->
-            currentModel, (createReservation currentModel.Reservation)
-        | FetchFailure _ -> { currentModel with Loading = false }, Cmd.none
         | FetchMeetingRoomSuccess mr -> { currentModel with MeetingRoom = mr; Loading = false }, Cmd.none
-        | FetchUserSuccess user ->
-            { currentModel with User = user }, Cmd.none
-        | FetchReservationSuccess reservation ->
-            { currentModel with Reservation = reservation }, Cmd.none
+        // common
+        | FetchFailure _ -> { currentModel with Loading = false }, Cmd.none
         | InitialListLoaded meetingRooms->
-            let nextModel:Model = {
-                Page = Page.MeetingRoomList;
-                MeetingRooms = meetingRooms;
-                Users = [];
-                Reservations = [];
-                Loading = false;
-                LoadingData = false;
-                MeetingRoomId = None;
-                MeetingRoom = { Id = 0; Name = ""; Code = None };
-                ShowListMeetingRooms= false;
-                ShowListUsers= false;
-                UserId = None;
-                ReservationId = None;
-                User = {
-                    Id = 0;
-                    Name = None;
-                    Surname = None;
-                    Email = "" };
-                Reservation = {
-                    Id = 0;
-                    MeetingRoom = {
-                        Id = 0;
-                        Name = "";
-                        Code = None
-                    }
-                    User = {
-                        Id = 0;
-                        Email = "";
-                        Name = None;
-                        Surname = None;
-                    }
-                    From = DateTime.Now;
-                    To = DateTime.Now };
-                    DatePickerFromState =  DatePicker.Types.defaultState;
-                    DatePickerToState = DatePicker.Types.defaultState
-            }
+            let nextModel = { getDefaultStatus() with MeetingRooms = meetingRooms; Loading = false }
             nextModel, Navigation.newUrl "#/meetingroomList"
-        | DeleteReservation id ->
-            currentModel, (deleteReservation id)
-        | DeleteUser id ->
-            currentModel, (deleteUser id)
-        | UserNameUpdated userName ->
-            let updatedUser = { currentModel.User  with Name = Some userName }
-            { currentModel with User = updatedUser }, Cmd.none
-        | EmailUpdated email ->
-            let updatedUser = { currentModel.User  with Email = email }
-            { currentModel with User = updatedUser }, Cmd.none
-        | SurnameUpdated surname ->
-            let updatedUser = { currentModel.User  with Surname = Some surname }
-            { currentModel with User = updatedUser }, Cmd.none
+

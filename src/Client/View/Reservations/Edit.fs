@@ -8,9 +8,11 @@ open MeetingRoom.Shared
 open UI.Model
 open UI.Messages.Type
 open Fable.FontAwesome
+open Fable.Core.JS
 
 module Edit =
     let editForm (model:Model)  (dispatch:Msg -> unit) =
+        console.log model.Users
         let pickerFromConfig : DatePicker.Types.Config<Msg> =
           DatePicker.Types.defaultConfig FromUpdated
 
