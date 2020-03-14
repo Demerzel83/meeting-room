@@ -11,6 +11,7 @@ module Type =
     type Msg =
       | InitialListLoaded of MeetingRoom list
       | FetchFailure of string*exn
+      | ClearError
       | FetchMeetingRoomSuccess of MeetingRoom
       | MeetingRoomNameUpdated of string
       | MeetingRoomCodeUpdated of string

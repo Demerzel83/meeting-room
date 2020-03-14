@@ -58,6 +58,13 @@ module View =
         Menu.Item.li [ Menu.Item.IsActive isActive ]
             [ a [ Href url ] [ str label ]  ]
 
+    let showError model dispatch =
+      match model.Error with
+          | Some (_, ex) ->
+            Notification.notification [ Notification.Color IsDanger ]
+                [ Button.button [ Button.OnClick (fun _ -> dispatch ClearError) ] [ ]; str (ex.ToString ()) ]
+          | None -> span [] []
+
     let view (model : Model) (dispatch : Msg -> unit) =
         let isPage = (=) model.Page
 
@@ -81,10 +88,12 @@ module View =
                         | _ -> [ str "Other"] )
 
                   ]
+              showError model dispatch
               Container.container []
                   [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
                       [showContent model dispatch]
                   ]
+
               Footer.footer [ ]
                     [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
                         [ safeComponents ] ] ]

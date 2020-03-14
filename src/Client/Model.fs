@@ -9,7 +9,7 @@ open UI.Parser.Type
 module Model =
     type Model =
         {   Page : Page
-
+            Error: (string*exn) option
             Users : User list
             UserId : string option
             User:  User
@@ -32,6 +32,7 @@ module Model =
 
     let getDefaultStatus ():Model =
         {   Page = Page.MeetingRoomList ;
+            Error = None;
             MeetingRooms = [] ;
             Users = [] ;
             Reservations = [] ;

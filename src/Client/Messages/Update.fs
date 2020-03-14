@@ -15,7 +15,7 @@ module Update =
     let always arg = fun _ -> arg
 
     let deleteMeetingRoomReload id =
-        Cmd.OfPromise.perform deleteMeetingRoom id (always LoadMeetingRooms)
+        Cmd.OfPromise.either deleteMeetingRoom id (fun a -> LoadMeetingRooms) (fun error -> FetchFailure ("Error", error))
 
     let createMeeting meetingRoom =
         Cmd.OfPromise.perform createMeetingRoom meetingRoom (always LoadMeetingRooms)
@@ -155,7 +155,8 @@ module Update =
 
         | FetchMeetingRoomSuccess mr -> { currentModel with MeetingRoom = mr; LoadingPage = false }, Cmd.none
         // common
-        | FetchFailure _ -> { currentModel with LoadingPage = false }, Cmd.none
+        | FetchFailure (message, error) -> { currentModel with LoadingPage = false; Error = Some (message, error) }, Cmd.none
+        | ClearError -> { currentModel with Error = None }, Cmd.none
         | InitialListLoaded meetingRooms->
             let nextModel = { getDefaultStatus() with MeetingRooms = meetingRooms; LoadingPage = false }
             nextModel, Navigation.newUrl "#/meetingroomList"
