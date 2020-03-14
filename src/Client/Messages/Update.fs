@@ -51,7 +51,7 @@ module Update =
         Cmd.OfPromise.perform User.create user (always LoadUsers)
 
     let deleteUser id =
-        Cmd.OfPromise.perform User.delete id (always LoadUsers)
+        Cmd.OfPromise.either User.delete id (always LoadUsers) (fun error -> FetchFailure ("Error", error))
 
     let updateMeeting meetingRoom =
         updatemr meetingRoom
@@ -112,7 +112,7 @@ module Update =
             let newModel = { currentModel with Page = Page.UserList; LoadingPage = true}
             newModel,  seq { updateUser currentModel.User; Navigation.newUrl "#/userList" } |> Cmd.batch
         | SaveNewUser ->
-            currentModel, (createUser currentModel.User)
+            currentModel, seq{ createUser currentModel.User; Navigation.newUrl "#/userList" } |> Cmd.batch
         | DeleteUser id ->
             currentModel, (deleteUser id)
         | UserNameUpdated userName ->
