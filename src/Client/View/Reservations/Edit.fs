@@ -11,12 +11,12 @@ open Fable.FontAwesome
 open Fable.Core.JS
 
 module Edit =
-    let editForm (model:Model)  (dispatch:Msg -> unit) =
+    let editForm (model:Model)  (dispatch:ReservationsMessages -> unit) =
         console.log model.Users
-        let pickerFromConfig : DatePicker.Types.Config<Msg> =
+        let pickerFromConfig : DatePicker.Types.Config<ReservationsMessages> =
           DatePicker.Types.defaultConfig FromUpdated
 
-        let pickerToConfig : DatePicker.Types.Config<Msg> =
+        let pickerToConfig : DatePicker.Types.Config<ReservationsMessages> =
           DatePicker.Types.defaultConfig ToUpdated
 
         let reservation = model.Reservation

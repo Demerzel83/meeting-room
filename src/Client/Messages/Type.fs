@@ -6,41 +6,51 @@ open Fulma.Elmish
 open MeetingRoom.Shared
 
 module Type =
-    // The Msg type defines what events/actions can occur while the application is running
-    // the state of the application changes *only* in reaction to these events
     type Msg =
-      | InitialListLoaded of MeetingRoom list
-      | FetchFailure of string*exn
-      | ClearError
-      | FetchMeetingRoomSuccess of MeetingRoom
-      | MeetingRoomNameUpdated of string
-      | MeetingRoomCodeUpdated of string
-      | MeetingRoomClicked
-      | SaveMeetingRoom
-      | SaveNewMeetingRoom
-      | DeleteMeetingRoom of int
-      | NewMeetingRoom
-      | LoadMeetingRooms
-      | FetchMeetingRooms
-      | MeetingRoomsFetched of MeetingRoom list
-      | LoadReservations
-      | ReservationsLoaded of Reservation list
-      | DeleteReservation of int
-      | FetchReservationSuccess of Reservation
-      | LoadUsers
-      | UsersLoaded of User list
-      | DeleteUser of int
-      | FetchUserSuccess of User
-      | MeetingRoomUpdated of MeetingRoom
-      | UserUpdated of User
-      | ShowListUsers
-      | UsersClicked
-      | SaveReservation
-      | SaveNewReservation
-      | UserNameUpdated of string
-      | EmailUpdated of string
-      | SurnameUpdated of string
-      | SaveUser
-      | SaveNewUser
-      | FromUpdated of DatePicker.Types.State * (DateTime option)
-      | ToUpdated of DatePicker.Types.State * (DateTime option)
+      | UserMessages
+      | ReservationsMessages
+      | MeetingRoomMessages
+      | SystemMessages
+
+    type SystemMessages =
+          | FetchFailure of string*exn
+          | ClearError
+
+    type UserMessages =
+          | LoadUsers
+          | UsersLoaded of User list
+          | DeleteUser of int
+          | FetchUserSuccess of User
+          | ShowListUsers
+          | UserNameUpdated of string
+          | EmailUpdated of string
+          | SurnameUpdated of string
+          | SaveUser
+          | SaveNewUser
+
+    type  ReservationsMessages =
+          | LoadReservations
+          | ReservationsLoaded of Reservation list
+          | DeleteReservation of int
+          | FetchReservationSuccess of Reservation
+          | SaveReservation
+          | SaveNewReservation
+          | FromUpdated of DatePicker.Types.State * (DateTime option)
+          | ToUpdated of DatePicker.Types.State * (DateTime option)
+          | UserUpdated of User
+          | MeetingRoomUpdated of MeetingRoom
+          | UsersClicked
+          | MeetingRoomClicked
+
+    type MeetingRoomMessages =
+          | InitialListLoaded of MeetingRoom list
+          | FetchMeetingRoomSuccess of MeetingRoom
+          | MeetingRoomNameUpdated of string
+          | MeetingRoomCodeUpdated of string
+          | SaveMeetingRoom
+          | SaveNewMeetingRoom
+          | DeleteMeetingRoom of int
+          | NewMeetingRoom
+          | LoadMeetingRooms
+          | FetchMeetingRooms
+          | MeetingRoomsFetched of MeetingRoom list

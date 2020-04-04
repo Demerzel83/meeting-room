@@ -8,11 +8,11 @@ open UI.Model
 open UI.Messages.Type
 
 module New =
-    let newForm (model:Model)  (dispatch:Msg -> unit) =
-        let pickerFromConfig : DatePicker.Types.Config<Msg> =
+    let newForm (model:Model)  (dispatch:ReservationsMessages -> unit) =
+        let pickerFromConfig : DatePicker.Types.Config<ReservationsMessages> =
           DatePicker.Types.defaultConfig FromUpdated
 
-        let pickerToConfig : DatePicker.Types.Config<Msg> =
+        let pickerToConfig : DatePicker.Types.Config<ReservationsMessages> =
           DatePicker.Types.defaultConfig ToUpdated
 
         form [ ]

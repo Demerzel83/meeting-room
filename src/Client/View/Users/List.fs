@@ -9,7 +9,7 @@ open UI.Messages.Type
 
 module List =
 
-    let showRows (reservations:User list) (dispatch : Msg -> unit) =
+    let showRows (reservations:User list) (dispatch : UserMessages -> unit) =
         List.map (fun (mr:User) -> tr [ ]
                                              [ td [ ] [ a [ Href ("#/user/" + mr.Id.ToString()) ] [ str "Open"]  ]
                                                td [ ] [ str (mr.Name.ToString()) ]
@@ -18,7 +18,7 @@ module List =
                                                td [ ] [ Button.button [ Button.Color IsDanger; Button.OnClick (fun _ -> dispatch (DeleteUser mr.Id)) ]
                                                             [ str "Delete" ] ] ]) reservations
 
-    let showList users (dispatch : Msg -> unit) =
+    let showList users (dispatch : UserMessages -> unit) =
        Table.table [ Table.IsHoverable ]
                             [ thead [ ]
                                 [ tr [ ]

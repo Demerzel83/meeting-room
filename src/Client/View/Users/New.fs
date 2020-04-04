@@ -7,7 +7,7 @@ open UI.Model
 open UI.Messages.Type
 
 module New =
-    let newForm (model:Model)  (dispatch:Msg -> unit) =
+    let newForm (model:Model)  (dispatch:UserMessages -> unit) =
         form [ ]
              [ // Name field
                Field.div [ ]

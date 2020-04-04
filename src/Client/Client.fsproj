@@ -27,6 +27,10 @@
         <Compile Include="View\Reservations\New.fs" />
         <Compile Include="View\Reservations\List.fs" />
         <Compile Include="View\Index.fs" />
+        <Compile Include="Messages\UpdateSystem.fs" />
+        <Compile Include="Messages\UpdateMeetingRooms.fs" />
+        <Compile Include="Messages\UpdateReservations.fs" />
+        <Compile Include="Messages\UpdateUsers.fs" />
         <Compile Include="Messages\Update.fs" />
         <Compile Include="Client.fs" />
     </ItemGroup>

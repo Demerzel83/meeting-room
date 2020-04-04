@@ -13,7 +13,7 @@ module List =
         | Some c -> str c
         | None -> str "No Code"
 
-    let showRows (meetingRooms:MeetingRoom list) (dispatch : Msg -> unit) =
+    let showRows (meetingRooms:MeetingRoom list) (dispatch : MeetingRoomMessages -> unit) =
         List.map (fun (mr:MeetingRoom) -> tr [ ]
                                              [ td [ ] [ a [ Href ("#/meetingroom/" + mr.Id.ToString()) ] [ str "Open"]  ]
                                                td [ ] [ str mr.Name ]
@@ -21,7 +21,7 @@ module List =
                                                td [ ] [ Button.button [ Button.Color IsDanger; Button.OnClick (fun _ -> dispatch (DeleteMeetingRoom mr.Id)) ]
                                                             [ str "Delete" ] ] ]) meetingRooms
 
-    let showList meetingRooms (dispatch : Msg -> unit) =
+    let showList meetingRooms (dispatch : MeetingRoomMessages -> unit) =
        Table.table [ Table.IsHoverable ]
                             [ thead [ ]
                                 [ tr [ ]

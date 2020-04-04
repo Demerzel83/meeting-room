@@ -7,7 +7,7 @@ open UI.Model
 open UI.Messages.Type
 
 module Edit =
-    let editForm (model:Model)  (dispatch:Msg -> unit) =
+    let editForm (model:Model)  (dispatch:MeetingRoomMessages -> unit) =
         let meetingRoom = model.MeetingRoom
         form [ ]
              [
