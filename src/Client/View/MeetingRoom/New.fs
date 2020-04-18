@@ -7,7 +7,7 @@ open UI.Model
 open UI.Messages.Type
 
 module New =
-    let newForm (model:Model)  (dispatch:MeetingRoomMessages -> unit) =
+    let newForm (model:Model)  (dispatch:Msg<MeetingRoomMessages> -> unit) =
         form [ ]
              [ // Name field
                Field.div [ ]
@@ -16,7 +16,7 @@ module New =
                       Control.div [ ]
                         [ Input.text [
                             Input.Value model.MeetingRoom.Name;
-                            Input.OnChange (fun event -> dispatch (MeetingRoomNameUpdated event.Value) ) ] ] ]
+                            Input.OnChange (fun event -> dispatch (Msg (MeetingRoomNameUpdated event.Value)) ) ] ] ]
                // Username field
                Field.div [ ]
                     [ Label.label [ ]
@@ -24,12 +24,12 @@ module New =
                       Control.div [ ]
                         [ Input.text [
                             Input.Value (Option.defaultValue ""  model.MeetingRoom.Code);
-                            Input.OnChange (fun event -> dispatch (MeetingRoomCodeUpdated event.Value)) ] ] ]
+                            Input.OnChange (fun event -> dispatch (Msg (MeetingRoomCodeUpdated event.Value)))] ] ]
                Field.div [ Field.IsGrouped ]
                 [ Control.div [ ]
-                    [ Button.button [ Button.Color IsPrimary; Button.OnClick (fun _ -> dispatch SaveNewMeetingRoom) ]
+                    [ Button.button [ Button.Color IsPrimary; Button.OnClick (fun _ -> dispatch (Msg SaveNewMeetingRoom)) ]
                         [ str "Save" ] ]
                   Control.div [ ]
-                    [ Button.button [ Button.IsLink; Button.OnClick (fun _ -> dispatch LoadMeetingRooms) ]
+                    [ Button.button [ Button.IsLink; Button.OnClick (fun _ -> dispatch (Msg LoadMeetingRooms)) ]
                         [ str "Cancel" ] ] ]
         ]

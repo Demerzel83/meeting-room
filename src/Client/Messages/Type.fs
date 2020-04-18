@@ -6,11 +6,7 @@ open Fulma.Elmish
 open MeetingRoom.Shared
 
 module Type =
-    type Msg =
-      | UserMessages
-      | ReservationsMessages
-      | MeetingRoomMessages
-      | SystemMessages
+    type Msg<'T> = Msg of 'T
 
     type SystemMessages =
           | FetchFailure of string*exn

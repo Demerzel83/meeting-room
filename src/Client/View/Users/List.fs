@@ -9,16 +9,16 @@ open UI.Messages.Type
 
 module List =
 
-    let showRows (reservations:User list) (dispatch : UserMessages -> unit) =
+    let showRows (reservations:User list) (dispatch : Msg<UserMessages> -> unit) =
         List.map (fun (mr:User) -> tr [ ]
                                              [ td [ ] [ a [ Href ("#/user/" + mr.Id.ToString()) ] [ str "Open"]  ]
                                                td [ ] [ str (mr.Name.ToString()) ]
                                                td [ ] [ str (mr.Surname.ToString()) ]
                                                td [ ] [ str (mr.Email.ToString()) ]
-                                               td [ ] [ Button.button [ Button.Color IsDanger; Button.OnClick (fun _ -> dispatch (DeleteUser mr.Id)) ]
+                                               td [ ] [ Button.button [ Button.Color IsDanger; Button.OnClick (fun _ -> dispatch (Msg (DeleteUser mr.Id))) ]
                                                             [ str "Delete" ] ] ]) reservations
 
-    let showList users (dispatch : UserMessages -> unit) =
+    let showList users (dispatch : Msg<UserMessages> -> unit) =
        Table.table [ Table.IsHoverable ]
                             [ thead [ ]
                                 [ tr [ ]

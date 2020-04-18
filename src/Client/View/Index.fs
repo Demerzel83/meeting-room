@@ -34,7 +34,7 @@ module View =
               components ]
 
 
-    let showContent (model:Model) (dispatch : Msg -> unit) =
+    let showContent (model:Model) (dispatch : Msg<'T> -> unit) =
         if model.LoadingPage then
             div [] [str "Loading...."]
         else
@@ -58,14 +58,14 @@ module View =
         Menu.Item.li [ Menu.Item.IsActive isActive ]
             [ a [ Href url ] [ str label ]  ]
 
-    let showError model dispatch =
+    let showError model (dispatch : Msg<'T> -> unit)  =
       match model.Error with
           | Some (_, ex) ->
             Notification.notification [ Notification.Color IsDanger ]
-                [ Button.button [ Button.OnClick (fun _ -> dispatch ClearError) ] [ ]; str (ex.ToString ()) ]
+                [ Button.button [ Button.OnClick (fun _ -> dispatch (Msg ClearError)) ] [ ]; str (ex.ToString ()) ]
           | None -> span [] []
 
-    let view (model : Model) (dispatch : Msg -> unit) =
+    let view (model : Model) (dispatch : Msg<'T> -> unit) =
         let isPage = (=) model.Page
 
         div []

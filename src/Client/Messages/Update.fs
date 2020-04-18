@@ -6,9 +6,9 @@ open UI.Model
 open UI.Messages.Type
 
 module Update =
-    let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
+    let update (msg : Msg<'T>) (currentModel : Model) : Model * Cmd<Msg<'T>> =
         match msg with
-        | UserMessages -> UpdateUsers.update (m :> UserMessages) currentModel
-        | ReservationsMessages -> UpdateReservations.update (msg:> ReservationsMessages) currentModel
-        | MeetingRoomMessages -> UpdateMeetingRooms.update (msg:> MeetingRoomMessages) currentModel
+        | Msg UserMessages um -> UpdateUsers.update um currentModel
+        | Msg ReservationsMessages rm -> UpdateReservations.update rm currentModel
+        | msg MeetingRoomMessages mr -> UpdateMeetingRooms.update mr currentModel
 

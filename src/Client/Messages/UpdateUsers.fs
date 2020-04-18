@@ -28,7 +28,7 @@ module UpdateUsers =
         let modelLoading = { model  with LoadingPage = true }
         modelLoading, loadUsers
 
-    let update (msg : UserMessages) (currentModel : Model) : Model * Cmd<UserMessages> =
+    let update (msg : UserMessages) (currentModel : Model) : Model * Cmd<Msg<UserMessages>> =
         match msg with
         | LoadUsers ->
             loadAllUsers currentModel

@@ -7,7 +7,7 @@ open UI.Model
 open UI.Messages.Type
 
 module Edit =
-    let editForm (model:Model)  (dispatch:UserMessages -> unit) =
+    let editForm (model:Model)  (dispatch:Msg<UserMessages> -> unit) =
         let user = model.User
         form [ ]
              [
@@ -17,26 +17,26 @@ module Edit =
                       Control.div [ ]
                         [ Input.text [
                             Input.Value user.Email;
-                            Input.OnChange (fun event -> dispatch (EmailUpdated event.Value) ) ] ] ]
+                            Input.OnChange (fun event -> dispatch (Msg (EmailUpdated event.Value))) ] ] ]
                Field.div [ ]
                     [ Label.label [ ]
                         [ str "Name" ]
                       Control.div [ ]
                         [ Input.text [
                             Input.Value (Option.defaultValue ""  user.Name);
-                            Input.OnChange (fun event -> dispatch (UserNameUpdated event.Value)) ] ] ]
+                            Input.OnChange (fun event -> dispatch (Msg (UserNameUpdated event.Value))) ] ] ]
                Field.div [ ]
                     [ Label.label [ ]
                         [ str "Surname" ]
                       Control.div [ ]
                         [ Input.text [
                             Input.Value (Option.defaultValue ""  user.Surname);
-                            Input.OnChange (fun event -> dispatch (SurnameUpdated event.Value)) ] ] ]
+                            Input.OnChange (fun event -> dispatch (Msg (SurnameUpdated event.Value))) ] ] ]
                Field.div [ Field.IsGrouped ]
                 [ Control.div [ ]
-                    [ Button.button [ Button.Color IsPrimary; Button.OnClick (fun _ -> dispatch SaveUser) ]
+                    [ Button.button [ Button.Color IsPrimary; Button.OnClick (fun _ -> dispatch (Msg SaveUser)) ]
                         [ str "Save" ] ]
                   Control.div [ ]
-                    [ Button.button [ Button.IsLink; Button.OnClick (fun _ -> dispatch LoadUsers) ]
+                    [ Button.button [ Button.IsLink; Button.OnClick (fun _ -> dispatch (Msg LoadUsers)) ]
                         [ str "Cancel" ] ] ]
         ]
