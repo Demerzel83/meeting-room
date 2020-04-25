@@ -1,0 +1,61 @@
+namespace MeetingRooms.Api
+
+open FSharp.Control.Tasks.V2
+open Giraffe
+open FSharpPlus.Data
+
+open MeetingRooms.Core.Types
+open MeetingRooms.Infrastructure
+
+module MeetingRoom =
+    let getHandlers connection =
+        choose [
+          POST >=> route "/api/meetingrooms/new" >=>
+            fun next context ->
+                task {
+                    let! newMeetingRoom = context.BindJsonAsync<MeetingRoom> ()
+                    let result = Reader.run ( MeetingRoomReader.insert newMeetingRoom) connection
+
+                    return! context.WriteJsonAsync result
+                }
+
+          GET >=> route "/api/meetingrooms" >=>
+            fun next context ->
+              task {
+                    let meetingRooms = MeetingRoomReader.getAll()
+                    let result = Reader.run meetingRooms connection
+
+                    return! json result next context
+                }
+          GET >=> routef "/api/meetingrooms/%i" (fun id ->
+            fun next context ->
+                task {
+                    let meetingRoom =
+                        id
+                        |> MeetingRoomReader.get
+
+                    let result = Reader.run meetingRoom connection
+
+                    return! json result next context
+                }
+          )
+          PUT >=> route "/api/meetingrooms/" >=>
+            fun next context ->
+               task {
+                    let! meetingRoom = context.BindJsonAsync<MeetingRoom>()
+                    let result = Reader.run (MeetingRoomReader.update meetingRoom) connection
+
+                    return! context.WriteJsonAsync result
+                }
+
+          DELETE >=> routef "/api/meetingrooms/%i" (fun id ->
+            fun next context ->
+              task {
+                    let changes =
+                        id
+                        |> MeetingRoomReader.delete
+                    let result = Reader.run changes connection
+
+                    return! context.WriteJsonAsync result
+                })
+        ]
